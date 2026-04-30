@@ -1,0 +1,58 @@
+import hero from "@/assets/hero-business.jpg";
+import { ArrowRight, FileDown } from "lucide-react";
+
+export function Hero() {
+  return (
+    <section id="top" className="relative overflow-hidden">
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: `url(${hero})` }}
+        aria-hidden
+      />
+      <div
+        className="absolute inset-0"
+        style={{ background: "var(--gradient-hero)" }}
+        aria-hidden
+      />
+      <div className="relative container-px mx-auto max-w-7xl pt-20 pb-24 md:pt-32 md:pb-40">
+        <div className="max-w-3xl">
+          <span className="eyebrow-light mb-6">Антикризисное управление · 20 лет практики</span>
+          <h1 className="text-white font-display text-4xl md:text-6xl font-extrabold leading-[1.05] tracking-tight">
+            Антикризисное управление для вашего бизнеса
+          </h1>
+          <p className="mt-6 text-lg md:text-xl text-white/85 leading-relaxed max-w-2xl">
+            Находим причины убытков и управленческого хаоса. Проводим диагностику финансов,
+            команды и процессов. Формируем конкретный план выхода из кризиса.
+          </p>
+          <div className="mt-8 p-4 md:p-5 rounded-2xl bg-white/8 border border-white/15 backdrop-blur-sm max-w-2xl">
+            <p className="text-white/90 text-base md:text-lg">
+              Запишитесь на <strong className="text-[oklch(0.85_0.13_80)]">бесплатную диагностику</strong> и получите файл&nbsp;
+              <em>«Антикризисные меры 2026 для бизнеса»</em>
+            </p>
+          </div>
+          <div className="mt-7 flex flex-col sm:flex-row gap-3">
+            <a href="#contacts" className="btn-cta">
+              Записаться на диагностику <ArrowRight size={18} />
+            </a>
+            <a href="#checklist" className="btn-ghost">
+              <FileDown size={18} /> Получить антикризисный файл
+            </a>
+          </div>
+          <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl">
+            {[
+              { v: "20 лет", l: "практики" },
+              { v: "1 млрд ₽", l: "оборот в месяц" },
+              { v: "1 день", l: "экспресс-диагностика" },
+              { v: "360°", l: "взгляд на бизнес" },
+            ].map((s) => (
+              <div key={s.l} className="border-l-2 border-[oklch(0.78_0.15_78)] pl-3">
+                <div className="text-white text-xl md:text-2xl font-display font-bold">{s.v}</div>
+                <div className="text-white/65 text-xs md:text-sm">{s.l}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
