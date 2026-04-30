@@ -1,26 +1,55 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Header } from "@/components/site/Header";
+import { Hero } from "@/components/site/Hero";
+import { About } from "@/components/site/About";
+import { HowIWork } from "@/components/site/HowIWork";
+import { Process } from "@/components/site/Process";
+import { Tools } from "@/components/site/Tools";
+import { Checklist } from "@/components/site/Checklist";
+import { Cases } from "@/components/site/Cases";
+import { Packages } from "@/components/site/Packages";
+import { Diplomas } from "@/components/site/Diplomas";
+import { Contact } from "@/components/site/Contact";
+import { Footer } from "@/components/site/Footer";
 
 export const Route = createFileRoute("/")({
   component: Index,
+  head: () => ({
+    meta: [
+      { title: "Семендуев — антикризисное управление для бизнеса" },
+      {
+        name: "description",
+        content:
+          "Антикризисный менеджер Виктор Семендуев. Диагностика финансов, команды и процессов. Конкретный план выхода из кризиса. Бесплатная экспресс-диагностика за 1 день.",
+      },
+      { property: "og:title", content: "Семендуев — антикризисное управление для бизнеса" },
+      {
+        property: "og:description",
+        content:
+          "Находим причины убытков и управленческого хаоса. Формируем план выхода из кризиса.",
+      },
+      { property: "og:type", content: "website" },
+    ],
+  }),
 });
 
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
+function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="min-h-screen bg-background text-foreground">
+      <Header />
+      <main>
+        <Hero />
+        <About />
+        <HowIWork />
+        <Checklist />
+        <Process />
+        <Tools />
+        <Cases />
+        <Packages />
+        <Diplomas />
+        <Contact />
+      </main>
+      <Footer />
     </div>
   );
-}
-
-function Index() {
-  return <PlaceholderIndex />;
 }
