@@ -19,7 +19,7 @@ export function Header() {
       <div className="container-px mx-auto max-w-7xl flex items-center justify-between h-16 md:h-20">
         <a href="#top" className="flex items-center gap-2.5">
           <img src={logo} alt="Семендуев — антикризисный менеджер" className="h-9 w-auto" width={48} height={36} />
-          <span className="text-white font-display font-bold tracking-tight text-base md:text-lg">СЕМЕНДУЕВ</span>
+          <span className="text-white font-display font-bold tracking-tight text-base md:text-lg">​</span>
         </a>
         <nav className="hidden lg:flex items-center gap-7">
           {links.map((l) => (
