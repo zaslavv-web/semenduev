@@ -26,7 +26,7 @@ export function Checklist() {
           <div className="text-white">
             <span className="eyebrow-light mb-5">Бесплатный материал</span>
             <h2 className="font-display text-3xl md:text-5xl font-extrabold leading-tight">
-              Получите файл «Антикризисные меры 2026 для бизнеса»
+              Получите чек-лист по выходу из кризиса
             </h2>
             <p className="mt-5 text-lg text-white/85 leading-relaxed">
               Внутри — список действий, которые помогают собственнику быстро оценить состояние
