@@ -24,11 +24,8 @@ export function Hero() {
             Находим причины убытков и управленческого хаоса. Проводим диагностику финансов,
             команды и процессов. Формируем конкретный план выхода из кризиса.
           </p>
-          <div className="mt-8 p-4 md:p-5 rounded-2xl bg-white/8 border border-white/15 backdrop-blur-sm max-w-2xl">
-            <p className="text-white/90 text-base md:text-lg">
-              Запишитесь на <strong className="text-[oklch(0.85_0.13_80)]">бесплатную диагностику</strong> и получите файл&nbsp;
-              <em>«Антикризисные меры 2026 для бизнеса»</em>
-            </p>
+          <div className="mt-8">
+            {/* CTA text removed as per request */}
           </div>
           <div className="mt-7 flex flex-col sm:flex-row gap-3">
             <a href="#contacts" className="btn-cta">
