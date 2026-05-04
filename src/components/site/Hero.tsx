@@ -32,7 +32,7 @@ export function Hero() {
               Записаться на экспресс-диагностику <ArrowRight size={18} />
             </a>
             <a href="#checklist" className="btn-ghost">
-              <FileDown size={18} /> Получить антикризисный файл
+              <FileDown size={18} /> Получить антикризисный чек-лист
             </a>
           </div>
           <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl">
