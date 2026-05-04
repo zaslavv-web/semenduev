@@ -14,7 +14,7 @@ export function Hero() {
         style={{ background: "var(--gradient-hero)" }}
         aria-hidden
       />
-      <div className="relative container-px mx-auto max-w-7xl pt-20 pb-24 md:pt-32 md:pb-40">
+      <div className="relative container-px mx-auto max-w-7xl pt-[40px] pb-24 md:pt-[88px] md:pb-40">
         <div className="max-w-3xl">
           <span className="eyebrow-light mb-6">Антикризисное управление · 20 лет практики</span>
           <h1 className="text-white font-display text-4xl md:text-6xl font-extrabold leading-[1.05] tracking-tight">
