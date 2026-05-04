@@ -6,7 +6,7 @@ export function Footer() {
       <div className="container-px mx-auto max-w-7xl flex flex-col md:flex-row gap-6 md:items-center md:justify-between">
         <div className="flex items-center gap-2.5">
           <img src={logo} alt="Семендуев" className="h-8 w-auto" width={40} height={32} />
-          <span className="font-display font-bold text-white">СЕМЕНДУЕВ</span>
+          <span className="font-display font-bold text-white">{"\n"}</span>
         </div>
         <div className="text-sm">
           © {new Date().getFullYear()} Виктор Семендуев · Антикризисное управление
