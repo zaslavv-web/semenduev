@@ -29,7 +29,7 @@ export function Hero() {
           </div>
           <div className="mt-7 flex flex-col sm:flex-row gap-3">
             <a href="#contacts" className="btn-cta">
-              Записаться на диагностику <ArrowRight size={18} />
+              Записаться на экспресс-диагностику <ArrowRight size={18} />
             </a>
             <a href="#checklist" className="btn-ghost">
               <FileDown size={18} /> Получить антикризисный файл
