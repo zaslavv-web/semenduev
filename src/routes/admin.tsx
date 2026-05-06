@@ -150,7 +150,11 @@ function Editor() {
   const [active, setActive] = useState<SectionKey>("hero");
   const [data, setData] = useState<SiteContent>(defaultContent);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
+  const [status, setStatus] = useState<"idle" | "dirty" | "saving" | "saved" | "error">("idle");
+  const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
+  const dirtySections = useRef<Set<SectionKey>>(new Set());
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
   const load = async () => {
     setLoading(true);
@@ -173,48 +177,87 @@ function Editor() {
     load();
   }, []);
 
-  async function save(section: SectionKey) {
-    setSaving(true);
-    const { error } = await supabase
-      .from("site_content")
-      .upsert({ section, data: data[section] as never, updated_by: (await supabase.auth.getUser()).data.user?.id });
-    setSaving(false);
-    if (error) toast.error(error.message);
-    else toast.success("Сохранено");
+  async function flushSave() {
+    if (dirtySections.current.size === 0) return;
+    const sections = Array.from(dirtySections.current);
+    dirtySections.current.clear();
+    setStatus("saving");
+    const userId = (await supabase.auth.getUser()).data.user?.id;
+    const rows = sections.map((s) => ({ section: s, data: data[s] as never, updated_by: userId }));
+    const { error } = await supabase.from("site_content").upsert(rows);
+    if (error) {
+      setStatus("error");
+      toast.error(error.message);
+      sections.forEach((s) => dirtySections.current.add(s));
+    } else {
+      setStatus("saved");
+      setTimeout(() => setStatus((s) => (s === "saved" ? "idle" : s)), 1500);
+    }
+  }
+
+  function scheduleSave(section: SectionKey) {
+    dirtySections.current.add(section);
+    setStatus("dirty");
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(flushSave, 700);
   }
 
   async function resetSection(section: SectionKey) {
     if (!confirm("Сбросить эту секцию к значениям по умолчанию?")) return;
-    setSaving(true);
     await supabase.from("site_content").delete().eq("section", section);
     setData((d) => ({ ...d, [section]: defaultContent[section] }));
-    setSaving(false);
     toast.success("Сброшено");
   }
 
   function update(section: SectionKey, value: unknown) {
     setData((d) => ({ ...d, [section]: value as never }));
+    scheduleSave(section);
+  }
+
+  function reloadPreview() {
+    if (iframeRef.current) iframeRef.current.src = iframeRef.current.src;
   }
 
   if (loading) return <div className="min-h-screen flex items-center justify-center">Загрузка…</div>;
 
+  const StatusBadge = () => {
+    const map = {
+      idle: { text: "Все изменения сохранены", icon: <Check size={14} />, cls: "text-muted-foreground" },
+      dirty: { text: "Ожидает сохранения…", icon: <Loader2 size={14} className="animate-spin" />, cls: "text-amber-600" },
+      saving: { text: "Сохранение…", icon: <Loader2 size={14} className="animate-spin" />, cls: "text-blue-600" },
+      saved: { text: "Сохранено", icon: <Check size={14} />, cls: "text-green-600" },
+      error: { text: "Ошибка сохранения", icon: <span>!</span>, cls: "text-destructive" },
+    } as const;
+    const s = map[status];
+    return (
+      <div className={`inline-flex items-center gap-1.5 text-xs font-medium ${s.cls}`}>
+        {s.icon} {s.text}
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen flex bg-background">
-      <aside className="w-64 border-r border-border bg-card p-4 flex flex-col gap-1 sticky top-0 h-screen overflow-y-auto">
-        <div className="text-lg font-bold mb-3 px-2">Админ-панель</div>
-        {SECTION_KEYS.map((k) => (
-          <button
-            key={k}
-            onClick={() => setActive(k)}
-            className={`text-left px-3 py-2 rounded-md text-sm font-medium transition ${
-              active === k ? "bg-primary text-primary-foreground" : "hover:bg-muted text-foreground"
-            }`}
-          >
-            {SECTION_LABELS[k]}
-          </button>
-        ))}
-        <div className="mt-auto pt-4 flex flex-col gap-2 border-t border-border">
-          <a href="/" target="_blank" rel="noreferrer" className="text-sm text-center text-muted-foreground hover:text-foreground py-2">
+      <aside className="w-56 border-r border-border bg-card flex flex-col sticky top-0 h-screen">
+        <div className="p-4 border-b border-border">
+          <div className="text-base font-bold">Контент сайта</div>
+          <div className="mt-1"><StatusBadge /></div>
+        </div>
+        <div className="flex-1 overflow-y-auto p-2 flex flex-col gap-0.5">
+          {SECTION_KEYS.map((k) => (
+            <button
+              key={k}
+              onClick={() => setActive(k)}
+              className={`text-left px-3 py-2 rounded-md text-sm font-medium transition ${
+                active === k ? "bg-primary text-primary-foreground" : "hover:bg-muted text-foreground"
+              }`}
+            >
+              {SECTION_LABELS[k]}
+            </button>
+          ))}
+        </div>
+        <div className="p-3 border-t border-border flex flex-col gap-2">
+          <a href="/" target="_blank" rel="noreferrer" className="text-xs text-center text-muted-foreground hover:text-foreground py-1">
             Открыть сайт ↗
           </a>
           <Button variant="outline" size="sm" onClick={() => supabase.auth.signOut()}>
@@ -223,23 +266,55 @@ function Editor() {
         </div>
       </aside>
 
-      <main className="flex-1 p-6 md:p-10 max-w-5xl">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl md:text-3xl font-bold">{SECTION_LABELS[active]}</h1>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => resetSection(active)}>
-              <RotateCcw size={14} className="mr-2" /> Сброс
+      {/* Editor column */}
+      <div className="w-[420px] border-r border-border flex flex-col h-screen sticky top-0">
+        <div className="px-5 py-4 border-b border-border flex items-center justify-between bg-card">
+          <h1 className="text-lg font-bold">{SECTION_LABELS[active]}</h1>
+          <Button variant="ghost" size="sm" onClick={() => resetSection(active)} title="Сбросить секцию">
+            <RotateCcw size={14} />
+          </Button>
+        </div>
+        <div className="flex-1 overflow-y-auto p-5">
+          <ValueEditor
+            value={data[active]}
+            onChange={(v) => update(active, v)}
+            defaultValue={defaultContent[active]}
+          />
+          <p className="mt-6 text-xs text-muted-foreground">
+            Изменения сохраняются автоматически и сразу появляются на сайте справа.
+          </p>
+        </div>
+      </div>
+
+      {/* Live preview */}
+      <main className="flex-1 flex flex-col h-screen sticky top-0 bg-muted/30">
+        <div className="px-4 py-2 border-b border-border bg-card flex items-center justify-between gap-2">
+          <div className="text-xs text-muted-foreground">Живой превью</div>
+          <div className="flex items-center gap-1">
+            <Button variant={device === "desktop" ? "secondary" : "ghost"} size="sm" onClick={() => setDevice("desktop")}>
+              <Monitor size={14} />
             </Button>
-            <Button size="sm" onClick={() => save(active)} disabled={saving}>
-              <Save size={14} className="mr-2" /> Сохранить
+            <Button variant={device === "mobile" ? "secondary" : "ghost"} size="sm" onClick={() => setDevice("mobile")}>
+              <Smartphone size={14} />
+            </Button>
+            <Button variant="ghost" size="sm" onClick={reloadPreview} title="Обновить">
+              <RefreshCw size={14} />
             </Button>
           </div>
         </div>
-        <ValueEditor
-          value={data[active]}
-          onChange={(v) => update(active, v)}
-          defaultValue={defaultContent[active]}
-        />
+        <div className="flex-1 overflow-auto flex items-start justify-center p-4">
+          <iframe
+            ref={iframeRef}
+            src={`/?preview=1#${active}`}
+            title="Preview"
+            className="bg-white rounded-md shadow-lg border border-border transition-all"
+            style={{
+              width: device === "mobile" ? 390 : "100%",
+              height: device === "mobile" ? 800 : "100%",
+              minHeight: "100%",
+            }}
+          />
+        </div>
       </main>
     </div>
   );
