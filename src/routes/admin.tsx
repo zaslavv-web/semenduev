@@ -142,6 +142,7 @@ const SECTION_LABELS: Record<SectionKey, string> = {
   packages: "Пакеты",
   contact: "Контакты",
   footer: "Футер",
+  diplomas: "Дипломы",
 };
 
 const SECTION_KEYS = Object.keys(SECTION_LABELS) as SectionKey[];
