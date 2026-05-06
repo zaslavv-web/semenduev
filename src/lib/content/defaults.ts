@@ -130,6 +130,11 @@ export type SiteContent = {
     phoneHref: string;
     email: string;
     emailHref: string;
+  diplomas: {
+    eyebrow: string;
+    title: string;
+    credentials: { title: string; text: string }[];
+    items: { src: string; pdf: string; alt: string }[];
   };
 };
 
