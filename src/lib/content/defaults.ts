@@ -444,6 +444,26 @@ export const defaultContent: SiteContent = {
     email: "viktor@semenduev.pro",
     emailHref: "mailto:viktor@semenduev.pro",
   },
+  diplomas: {
+    eyebrow: "Образование и квалификация",
+    title: "Дипломы и сертификаты",
+    credentials: [
+      {
+        title: "Кандидат экономических наук",
+        text: "Специальность 08.00.05 — Экономика и управление народным хозяйством. Тема диссертации: «Антикризисное управление предприятием в условиях высокой экономической нестабильности».",
+      },
+      {
+        title: "ДПО «Консалтинг в управлении бизнесом» (2025)",
+        text: "Основы консалтинга, методология консалтинга, создание консультационных программ, консультационный менеджмент.",
+      },
+    ],
+    items: [
+      { src: "/diplomas/diploma-1-1.jpg", pdf: "/diplomas/diploma-1.pdf", alt: "Диплом 1" },
+      { src: "/diplomas/diploma-2-1.jpg", pdf: "/diplomas/diploma-2.pdf", alt: "Диплом 2" },
+      { src: "/diplomas/diploma-3-1.jpg", pdf: "/diplomas/diploma-3.pdf", alt: "Диплом 3" },
+      { src: "/diplomas/diploma-4-1.jpg", pdf: "/diplomas/diploma-4.pdf", alt: "Диплом 4" },
+    ],
+  },
 };
 
 export type SectionKey = keyof SiteContent;
