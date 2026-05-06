@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { defaultContent, type SectionKey, type SiteContent } from "@/lib/content/defaults";
@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { LogOut, Save, Upload, RotateCcw, Plus, Trash2 } from "lucide-react";
+import { LogOut, Upload, RotateCcw, Plus, Trash2, Check, Loader2, Monitor, Smartphone, RefreshCw } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
   component: AdminPage,
