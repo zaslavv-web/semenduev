@@ -1,16 +1,9 @@
-import portrait from "@/assets/portrait.jpg";
 import { CheckCircle2, ArrowRight } from "lucide-react";
 import { CTA } from "./CTA";
-
-const facts = [
-  "20 лет практического опыта",
-  "Обороты до 1 млрд ₽ в год",
-  "Антикризисное управление",
-  "Финансы, команда, процессы",
-  "Экспресс-диагностика за 1 день",
-];
+import { useSection } from "@/lib/content/ContentProvider";
 
 export function About() {
+  const c = useSection("about");
   return (
     <section id="about" className="section bg-surface">
       <div className="container-px mx-auto max-w-7xl">
@@ -18,8 +11,8 @@ export function About() {
           <div className="relative">
             <div className="absolute -inset-4 rounded-3xl bg-[oklch(0.78_0.15_78_/_0.15)] -z-10" />
             <img
-              src={portrait}
-              alt="Виктор Семендуев — антикризисный менеджер"
+              src={c.portrait}
+              alt={c.title}
               className="rounded-2xl w-full shadow-[var(--shadow-elegant)]"
               loading="lazy"
               width={1024}
@@ -27,32 +20,20 @@ export function About() {
             />
           </div>
           <div>
-            <span className="eyebrow mb-5">Обо мне</span>
+            <span className="eyebrow mb-5">{c.eyebrow}</span>
             <h2 className="font-display text-3xl md:text-5xl font-extrabold leading-tight text-foreground">
-              Виктор Семендуев
+              {c.title}
             </h2>
-            <p className="mt-2 text-lg text-muted-foreground">Антикризисный менеджер · к.э.н.</p>
+            <p className="mt-2 text-lg text-muted-foreground">{c.subtitle}</p>
 
             <div className="mt-6 space-y-4 text-base md:text-lg text-foreground/85 leading-relaxed">
-              <p>
-                Антикризисный менеджер с <strong>20-летним практическим опытом</strong>.
-                В 2005 году основал российское подразделение CreditExpress, которое за 12 лет
-                выросло в одного из лидеров рынка с оборотом почти <strong>1 млрд рублей в год</strong>.
-              </p>
-              <p>
-                Мой опыт — это не теория, а работа в агрессивной бизнес-среде: долги, падение
-                cash flow, неэффективные команды, управленческие конфликты, внешнее давление и
-                кризисы роста.
-              </p>
-              <p>
-                Помогаю собственникам увидеть не симптомы, а <strong>корневые причины</strong> проблем
-                — в процессах и управлении, команде, финансах. После диагностики вы получаете не
-                общие советы, а <strong>первичный план работ по выходу из кризиса</strong>.
-              </p>
+              {c.paragraphs.map((p, i) => (
+                <p key={i}>{p}</p>
+              ))}
             </div>
 
             <ul className="mt-7 grid sm:grid-cols-2 gap-3">
-              {facts.map((f) => (
+              {c.facts.map((f) => (
                 <li key={f} className="flex items-start gap-2.5 text-foreground/90">
                   <CheckCircle2 size={20} className="text-[oklch(0.55_0.14_155)] shrink-0 mt-0.5" />
                   <span className="text-sm md:text-base font-medium">{f}</span>
@@ -60,18 +41,14 @@ export function About() {
               ))}
             </ul>
 
-            <a href="#contacts" className="btn-cta mt-8 inline-flex">
-              Получить диагностику бизнеса <ArrowRight size={18} />
+            <a href={c.ctaHref} className="btn-cta mt-8 inline-flex">
+              {c.ctaLabel} <ArrowRight size={18} />
             </a>
           </div>
         </div>
 
         <div className="mt-16">
-          <CTA
-            variant="dark"
-            title="Хотите понять, где ваш бизнес теряет деньги?"
-            subtitle="Бесплатная экспресс-диагностика за 1 день. Конфиденциально."
-          />
+          <CTA variant="dark" title={c.bottomCtaTitle} subtitle={c.bottomCtaSubtitle} />
         </div>
       </div>
     </section>

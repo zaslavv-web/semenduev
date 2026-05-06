@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { Phone, Mail, Clock, ShieldCheck, Zap, ArrowRight, CheckCircle2 } from "lucide-react";
+import { useSection } from "@/lib/content/ContentProvider";
+
+const badgeIcons = [Clock, Zap, ShieldCheck];
 
 export function Contact() {
+  const c = useSection("contact");
   const [sent, setSent] = useState(false);
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -14,53 +18,41 @@ export function Contact() {
       <div className="container-px mx-auto max-w-7xl">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
           <div>
-            <span className="eyebrow mb-5">Контакты</span>
-            <h2 className="font-display text-3xl md:text-5xl font-extrabold leading-tight tracking-tight">
-              Запишитесь на бесплатную диагностику бизнеса
-            </h2>
-            <p className="mt-5 text-lg text-muted-foreground leading-relaxed">
-              Разберём вашу ситуацию, определим ключевые проблемы и покажем, какие действия можно
-              предпринять уже в ближайшие недели.
-            </p>
+            <span className="eyebrow mb-5">{c.eyebrow}</span>
+            <h2 className="font-display text-3xl md:text-5xl font-extrabold leading-tight tracking-tight">{c.title}</h2>
+            <p className="mt-5 text-lg text-muted-foreground leading-relaxed">{c.description}</p>
 
             <div className="mt-8 space-y-3">
-              <a
-                href="tel:+79269882199"
-                className="flex items-center gap-3 p-4 rounded-xl bg-card border border-border hover:shadow-[var(--shadow-soft)] transition"
-              >
+              <a href={c.phoneHref} className="flex items-center gap-3 p-4 rounded-xl bg-card border border-border hover:shadow-[var(--shadow-soft)] transition">
                 <div className="w-11 h-11 rounded-lg flex items-center justify-center" style={{ background: "var(--gradient-brand)" }}>
                   <Phone size={20} className="text-white" />
                 </div>
                 <div>
-                  <div className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">Телефон</div>
-                  <div className="font-display font-bold text-lg text-foreground">+7 926 988 21 99</div>
+                  <div className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">{c.phoneLabel}</div>
+                  <div className="font-display font-bold text-lg text-foreground">{c.phone}</div>
                 </div>
               </a>
-              <a
-                href="mailto:viktor@semenduev.pro"
-                className="flex items-center gap-3 p-4 rounded-xl bg-card border border-border hover:shadow-[var(--shadow-soft)] transition"
-              >
+              <a href={c.emailHref} className="flex items-center gap-3 p-4 rounded-xl bg-card border border-border hover:shadow-[var(--shadow-soft)] transition">
                 <div className="w-11 h-11 rounded-lg flex items-center justify-center" style={{ background: "var(--gradient-brand)" }}>
                   <Mail size={20} className="text-white" />
                 </div>
                 <div>
-                  <div className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">Email</div>
-                  <div className="font-display font-bold text-lg text-foreground">viktor@semenduev.pro</div>
+                  <div className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">{c.emailLabel}</div>
+                  <div className="font-display font-bold text-lg text-foreground">{c.email}</div>
                 </div>
               </a>
             </div>
 
             <div className="mt-8 grid sm:grid-cols-3 gap-3">
-              {[
-                { icon: Clock, t: "Ответ в течение рабочего дня" },
-                { icon: Zap, t: "Экспресс-разбор за 1 день" },
-                { icon: ShieldCheck, t: "Конфиденциально" },
-              ].map((b) => (
-                <div key={b.t} className="bg-card border border-border rounded-xl p-4 flex flex-col items-start gap-2">
-                  <b.icon size={20} className="text-[oklch(0.45_0.13_70)]" />
-                  <span className="text-sm font-semibold text-foreground">{b.t}</span>
-                </div>
-              ))}
+              {c.badges.map((t, i) => {
+                const Icon = badgeIcons[i % badgeIcons.length];
+                return (
+                  <div key={t} className="bg-card border border-border rounded-xl p-4 flex flex-col items-start gap-2">
+                    <Icon size={20} className="text-[oklch(0.45_0.13_70)]" />
+                    <span className="text-sm font-semibold text-foreground">{t}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
@@ -68,20 +60,18 @@ export function Contact() {
             {sent ? (
               <div className="text-center py-10">
                 <CheckCircle2 size={56} className="text-[oklch(0.55_0.14_155)] mx-auto mb-4" />
-                <h3 className="font-display text-2xl font-bold text-foreground">Заявка отправлена</h3>
-                <p className="mt-2 text-muted-foreground">
-                  Свяжусь с вами в течение рабочего дня.
-                </p>
+                <h3 className="font-display text-2xl font-bold text-foreground">{c.successTitle}</h3>
+                <p className="mt-2 text-muted-foreground">{c.successDescription}</p>
               </div>
             ) : (
               <>
-                <h3 className="font-display text-2xl font-bold text-foreground">Заявка на диагностику</h3>
-                <p className="mt-2 text-muted-foreground">Заполните форму — отвечу лично.</p>
+                <h3 className="font-display text-2xl font-bold text-foreground">{c.formTitle}</h3>
+                <p className="mt-2 text-muted-foreground">{c.formSubtitle}</p>
                 <form onSubmit={onSubmit} className="mt-6 space-y-4">
-                  <Field label="Имя" name="name" required />
-                  <Field label="Телефон" name="phone" required />
+                  <Field label={c.nameLabel} name="name" required />
+                  <Field label={c.phoneFieldLabel} name="phone" required />
                   <label className="block">
-                    <span className="text-sm font-semibold text-foreground">Кратко о ситуации</span>
+                    <span className="text-sm font-semibold text-foreground">{c.messageLabel}</span>
                     <textarea
                       name="message"
                       rows={4}
@@ -89,7 +79,7 @@ export function Contact() {
                     />
                   </label>
                   <button type="submit" className="btn-cta w-full">
-                    Получить бесплатную диагностику <ArrowRight size={18} />
+                    {c.submitLabel} <ArrowRight size={18} />
                   </button>
                   <p className="text-xs text-muted-foreground text-center">
                     Отправляя форму, вы соглашаетесь с обработкой персональных данных.
