@@ -5,7 +5,6 @@ const diplomas = [
   { src: "/diplomas/diploma-2-1.jpg", pdf: "/diplomas/diploma-2.pdf" },
   { src: "/diplomas/diploma-3-1.jpg", pdf: "/diplomas/diploma-3.pdf" },
   { src: "/diplomas/diploma-4-1.jpg", pdf: "/diplomas/diploma-4.pdf" },
-  { src: "/diplomas/diploma-5-1.jpg", pdf: "/diplomas/diploma-5.pdf" },
 ];
 
 const credentials = [
