@@ -156,6 +156,10 @@ function Editor() {
   const dirtySections = useRef<Set<SectionKey>>(new Set());
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  const dataRef = useRef<SiteContent>(defaultContent);
+  useEffect(() => {
+    dataRef.current = data;
+  }, [data]);
 
   const load = async () => {
     setLoading(true);
@@ -184,7 +188,7 @@ function Editor() {
     dirtySections.current.clear();
     setStatus("saving");
     const userId = (await supabase.auth.getUser()).data.user?.id;
-    const rows = sections.map((s) => ({ section: s, data: data[s] as never, updated_by: userId }));
+    const rows = sections.map((s) => ({ section: s, data: dataRef.current[s] as never, updated_by: userId }));
     const { error } = await supabase.from("site_content").upsert(rows);
     if (error) {
       setStatus("error");
