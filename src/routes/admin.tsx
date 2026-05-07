@@ -188,7 +188,7 @@ function Editor() {
     dirtySections.current.clear();
     setStatus("saving");
     const userId = (await supabase.auth.getUser()).data.user?.id;
-    const rows = sections.map((s) => ({ section: s, data: data[s] as never, updated_by: userId }));
+    const rows = sections.map((s) => ({ section: s, data: dataRef.current[s] as never, updated_by: userId }));
     const { error } = await supabase.from("site_content").upsert(rows);
     if (error) {
       setStatus("error");
