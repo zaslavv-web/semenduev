@@ -156,6 +156,10 @@ function Editor() {
   const dirtySections = useRef<Set<SectionKey>>(new Set());
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  const dataRef = useRef<SiteContent>(defaultContent);
+  useEffect(() => {
+    dataRef.current = data;
+  }, [data]);
 
   const load = async () => {
     setLoading(true);
