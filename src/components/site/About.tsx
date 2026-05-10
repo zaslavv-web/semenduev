@@ -48,7 +48,13 @@ export function About() {
         </div>
 
         <div className="mt-16">
-          <CTA variant="dark" title={c.bottomCtaTitle} subtitle={c.bottomCtaSubtitle} />
+          <CTA
+            variant="dark"
+            title={c.bottomCtaTitle}
+            subtitle={c.bottomCtaSubtitle}
+            primaryLabel="Обсудить ситуацию"
+            secondaryLabel="Получить чек-лист"
+          />
         </div>
       </div>
     </section>

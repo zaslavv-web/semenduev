@@ -28,25 +28,32 @@ export function Diplomas() {
           ))}
         </div>
 
-        <div className="mt-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-5">
           {c.items.map((d, i) => (
             <a
               key={i}
               href={d.pdf}
               target="_blank"
               rel="noreferrer"
-              className="group block bg-card border border-border rounded-xl overflow-hidden shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-elegant)] transition"
+              className="group flex flex-col bg-card border border-border rounded-2xl overflow-hidden shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-elegant)] transition"
             >
-              <div className="aspect-[3/4] overflow-hidden bg-surface-2">
+              <div className="aspect-[3/4] overflow-hidden bg-[oklch(0.96_0.01_80)] p-3 flex items-center justify-center">
                 <img
                   src={d.src}
                   alt={d.alt || `Диплом ${i + 1}`}
                   loading="lazy"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
-              <div className="p-3 flex items-center gap-2 text-xs font-medium text-muted-foreground">
-                <FileText size={14} /> Открыть PDF
+              <div className="p-4 border-t border-border">
+                {d.category && (
+                  <div className="text-xs font-bold uppercase tracking-wider text-[oklch(0.45_0.13_70)] mb-1">
+                    {d.category}
+                  </div>
+                )}
+                <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+                  <FileText size={14} /> Открыть PDF
+                </div>
               </div>
             </a>
           ))}

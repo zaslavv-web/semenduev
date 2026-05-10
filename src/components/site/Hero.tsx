@@ -5,7 +5,11 @@ export function Hero() {
   const c = useSection("hero");
   return (
     <section id="top" className="relative overflow-hidden">
-      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${c.backgroundImage})` }} aria-hidden />
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: `url(${c.backgroundImage})` }}
+        aria-hidden
+      />
       <div className="absolute inset-0" style={{ background: "var(--gradient-hero)" }} aria-hidden />
       <div className="relative container-px mx-auto max-w-7xl pt-[40px] pb-24 md:pt-[88px] md:pb-40">
         <div className="max-w-3xl">
@@ -13,7 +17,14 @@ export function Hero() {
           <h1 className="text-white font-display text-4xl md:text-6xl font-extrabold leading-[1.05] tracking-tight">
             {c.title}
           </h1>
-          <p className="mt-6 text-lg md:text-xl text-white/85 leading-relaxed max-w-2xl">{c.description}</p>
+          <p className="mt-6 text-lg md:text-xl text-white/85 leading-relaxed max-w-2xl">
+            {c.description}
+          </p>
+          {c.tagline && (
+            <p className="mt-5 text-base md:text-lg text-[oklch(0.85_0.13_80)] italic font-medium max-w-2xl border-l-2 border-[oklch(0.78_0.15_78)] pl-4">
+              «{c.tagline}»
+            </p>
+          )}
           <div className="mt-7 flex flex-col sm:flex-row gap-3">
             <a href={c.primaryCtaHref} className="btn-cta">
               {c.primaryCtaLabel} <ArrowRight size={18} />

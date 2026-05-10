@@ -31,7 +31,12 @@ export function HowIWork() {
         </div>
 
         <div className="mt-12">
-          <CTA title={c.ctaTitle} subtitle={c.ctaSubtitle} />
+          <CTA
+            title={c.ctaTitle}
+            subtitle={c.ctaSubtitle}
+            primaryLabel="Разобрать ситуацию"
+            secondaryLabel="Получить чек-лист"
+          />
         </div>
       </div>
     </section>

@@ -143,6 +143,7 @@ const SECTION_LABELS: Record<SectionKey, string> = {
   contact: "Контакты",
   footer: "Футер",
   diplomas: "Дипломы",
+  privacy: "Политика конфиденциальности",
 };
 
 const SECTION_KEYS = Object.keys(SECTION_LABELS) as SectionKey[];
@@ -546,6 +547,20 @@ const LABELS: Record<string, string> = {
   l: "Подпись",
   linkLabel: "Текст ссылки",
   linkHref: "Ссылка",
+  tagline: "Сильная цитата",
+  tools: "Инструменты этапа",
+  category: "Категория",
+  consentText: "Текст согласия под формой",
+  urgencyText: "Сообщение о срочности",
+  privacyLabel: "Политика — текст ссылки",
+  privacyHref: "Политика — ссылка",
+  consentLabel: "Согласие — текст ссылки",
+  consentHref: "Согласие — ссылка",
+  requisites: "Реквизиты",
+  credentials: "Образование (карточки)",
+  intro: "Вступление",
+  sections: "Разделы",
+  updatedAt: "Дата обновления",
 };
 
 function prettyLabel(k: string) {
