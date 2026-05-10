@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Phone, Mail, Clock, ShieldCheck, Zap, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Phone, Mail, Clock, ShieldCheck, Zap, ArrowRight, CheckCircle2, AlertTriangle } from "lucide-react";
 import { useSection } from "@/lib/content/ContentProvider";
 
 const badgeIcons = [Clock, Zap, ShieldCheck];
@@ -19,10 +19,19 @@ export function Contact() {
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
           <div>
             <span className="eyebrow mb-5">{c.eyebrow}</span>
-            <h2 className="font-display text-3xl md:text-5xl font-extrabold leading-tight tracking-tight">{c.title}</h2>
+            <h2 className="font-display text-3xl md:text-5xl font-extrabold leading-tight tracking-tight">
+              {c.title}
+            </h2>
             <p className="mt-5 text-lg text-muted-foreground leading-relaxed">{c.description}</p>
 
-            <div className="mt-8 space-y-3">
+            {c.urgencyText && (
+              <div className="mt-6 flex items-start gap-2.5 text-sm md:text-base font-medium text-[oklch(0.45_0.18_30)] bg-[oklch(0.97_0.05_60)] border border-[oklch(0.85_0.1_60)] rounded-xl p-4">
+                <AlertTriangle size={20} className="shrink-0 mt-0.5" />
+                <span>{c.urgencyText}</span>
+              </div>
+            )}
+
+            <div className="mt-6 space-y-3">
               <a href={c.phoneHref} className="flex items-center gap-3 p-4 rounded-xl bg-card border border-border hover:shadow-[var(--shadow-soft)] transition">
                 <div className="w-11 h-11 rounded-lg flex items-center justify-center" style={{ background: "var(--gradient-brand)" }}>
                   <Phone size={20} className="text-white" />
@@ -81,8 +90,12 @@ export function Contact() {
                   <button type="submit" className="btn-cta w-full">
                     {c.submitLabel} <ArrowRight size={18} />
                   </button>
-                  <p className="text-xs text-muted-foreground text-center">
-                    Отправляя форму, вы соглашаетесь с обработкой персональных данных.
+                  <p className="text-xs text-muted-foreground text-center leading-relaxed">
+                    {c.consentText}{" "}
+                    <a href="/privacy" className="underline hover:text-foreground">
+                      Подробнее
+                    </a>
+                    .
                   </p>
                 </form>
               </>

@@ -57,8 +57,12 @@ export function Checklist() {
                   <button type="submit" className="btn-cta w-full">
                     <FileDown size={18} /> {c.submitLabel}
                   </button>
-                  <p className="text-xs text-muted-foreground text-center">
-                    Отправляя форму, вы соглашаетесь с обработкой персональных данных.
+                  <p className="text-xs text-muted-foreground text-center leading-relaxed">
+                    {c.consentText}{" "}
+                    <a href="/privacy" className="underline hover:text-foreground">
+                      Подробнее
+                    </a>
+                    .
                   </p>
                 </form>
               </>
