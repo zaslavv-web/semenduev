@@ -1,9 +1,11 @@
 import { CheckCircle2, ArrowRight } from "lucide-react";
 import { CTA } from "./CTA";
 import { useSection } from "@/lib/content/ContentProvider";
+import { useCtaProps } from "./RequestDialog";
 
 export function About() {
   const c = useSection("about");
+  const ctaProps = useCtaProps();
   return (
     <section id="about" className="section bg-surface">
       <div className="container-px mx-auto max-w-7xl">
@@ -41,7 +43,7 @@ export function About() {
               ))}
             </ul>
 
-            <a href={c.ctaHref} className="btn-cta mt-8 inline-flex">
+            <a {...ctaProps(c.ctaHref)} className="btn-cta mt-8 inline-flex">
               {c.ctaLabel} <ArrowRight size={18} />
             </a>
           </div>
