@@ -153,7 +153,8 @@
   }
   .btn-outline:hover { background: var(--brand); color: var(--brand-foreground); }
 
-  .section { padding-top: 5rem; padding-bottom: 5rem; }
+  .section { padding-top: 3rem; padding-bottom: 3rem; }
+  @media (min-width: 640px) { .section { padding-top: 4rem; padding-bottom: 4rem; } }
   @media (min-width: 768px) { .section { padding-top: 6.5rem; padding-bottom: 6.5rem; } }
 
   .eyebrow {
