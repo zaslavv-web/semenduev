@@ -20,7 +20,7 @@ export function Header() {
             </a>
           ))}
         </nav>
-        <a {...ctaProps(c.ctaHref)} className="hidden md:inline-flex btn-cta !py-2.5 !px-4 !text-sm">
+        <a {...ctaProps(c.ctaHref)} className="hidden sm:inline-flex btn-cta !py-2.5 !px-4 !text-sm">
           {c.ctaLabel}
         </a>
         <button onClick={() => setOpen(!open)} className="lg:hidden text-white p-2" aria-label="Меню">

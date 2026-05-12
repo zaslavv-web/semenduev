@@ -28,7 +28,7 @@ export function Diplomas() {
           ))}
         </div>
 
-        <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-5">
+        <div className="mt-10 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5">
           {c.items.map((d, i) => (
             <a
               key={i}

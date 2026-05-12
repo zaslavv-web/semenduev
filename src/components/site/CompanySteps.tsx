@@ -19,12 +19,12 @@ export function CompanySteps() {
           {c.steps.map((s, i) => {
             const Icon = icons[i % icons.length];
             return (
-              <article key={i} className="card-soft flex gap-5">
+              <article key={i} className="card-soft flex gap-4 sm:gap-5">
                 <div
-                  className="shrink-0 w-14 h-14 rounded-xl flex items-center justify-center"
+                  className="shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center"
                   style={{ background: "var(--gradient-brand)", color: "var(--brand-foreground)" }}
                 >
-                  <Icon size={26} />
+                  <Icon size={22} />
                 </div>
                 <div className="flex-1">
                   <div className="text-xs font-bold tracking-widest text-muted-foreground mb-1">

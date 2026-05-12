@@ -46,13 +46,13 @@ export function CTA({
           </p>
         )}
       </div>
-      <div className="flex flex-col sm:flex-row gap-3 shrink-0">
-        <a {...ctaProps(primaryHref)} className="btn-cta whitespace-nowrap">
+      <div className="flex flex-col sm:flex-row gap-3 shrink-0 w-full md:w-auto">
+        <a {...ctaProps(primaryHref)} className="btn-cta w-full sm:w-auto">
           {primaryLabel} <ArrowRight size={18} />
         </a>
         <a
           href={secondaryHref}
-          className={dark ? "btn-ghost whitespace-nowrap" : "btn-outline whitespace-nowrap"}
+          className={`${dark ? "btn-ghost" : "btn-outline"} w-full sm:w-auto`}
         >
           <FileDown size={18} /> {secondaryLabel}
         </a>
