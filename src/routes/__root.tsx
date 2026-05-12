@@ -1,5 +1,6 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { ContentProvider } from "@/lib/content/ContentProvider";
+import { RequestDialogProvider } from "@/components/site/RequestDialog";
 import { Toaster } from "@/components/ui/sonner";
 
 import appCss from "../styles.css?url";
@@ -73,8 +74,10 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   return (
     <ContentProvider>
-      <Outlet />
-      <Toaster />
+      <RequestDialogProvider>
+        <Outlet />
+        <Toaster />
+      </RequestDialogProvider>
     </ContentProvider>
   );
 }
