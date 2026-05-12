@@ -1,8 +1,10 @@
 import { Check, Star, ArrowRight } from "lucide-react";
 import { useSection } from "@/lib/content/ContentProvider";
+import { useCtaProps } from "./RequestDialog";
 
 export function Packages() {
   const c = useSection("packages");
+  const ctaProps = useCtaProps();
   return (
     <section id="packages" className="section">
       <div className="container-px mx-auto max-w-7xl">
@@ -48,7 +50,7 @@ export function Packages() {
               </div>
 
               <a
-                href={p.ctaHref}
+                {...ctaProps(p.ctaHref)}
                 className={`mt-6 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-bold transition ${
                   p.featured
                     ? "bg-[oklch(0.78_0.15_78)] text-[oklch(0.18_0.04_255)] hover:brightness-110"
