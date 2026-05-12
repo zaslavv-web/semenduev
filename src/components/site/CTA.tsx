@@ -1,4 +1,5 @@
 import { ArrowRight, FileDown } from "lucide-react";
+import { useCtaProps } from "./RequestDialog";
 
 export function CTA({
   title,
@@ -18,6 +19,7 @@ export function CTA({
   secondaryHref?: string;
 }) {
   const dark = variant === "dark";
+  const ctaProps = useCtaProps();
   return (
     <div
       className={`rounded-2xl p-6 md:p-10 flex flex-col md:flex-row md:items-center justify-between gap-5 ${
@@ -45,7 +47,7 @@ export function CTA({
         )}
       </div>
       <div className="flex flex-col sm:flex-row gap-3 shrink-0">
-        <a href={primaryHref} className="btn-cta whitespace-nowrap">
+        <a {...ctaProps(primaryHref)} className="btn-cta whitespace-nowrap">
           {primaryLabel} <ArrowRight size={18} />
         </a>
         <a

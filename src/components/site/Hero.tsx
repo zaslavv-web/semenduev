@@ -1,8 +1,10 @@
 import { ArrowRight, FileDown } from "lucide-react";
 import { useSection } from "@/lib/content/ContentProvider";
+import { useCtaProps } from "./RequestDialog";
 
 export function Hero() {
   const c = useSection("hero");
+  const ctaProps = useCtaProps();
   return (
     <section id="top" className="relative overflow-hidden">
       <div
@@ -26,7 +28,7 @@ export function Hero() {
             </p>
           )}
           <div className="mt-7 flex flex-col sm:flex-row gap-3">
-            <a href={c.primaryCtaHref} className="btn-cta">
+            <a {...ctaProps(c.primaryCtaHref)} className="btn-cta">
               {c.primaryCtaLabel} <ArrowRight size={18} />
             </a>
             <a href={c.secondaryCtaHref} className="btn-ghost">

@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { useSection } from "@/lib/content/ContentProvider";
+import { useCtaProps } from "./RequestDialog";
 
 export function Header() {
   const [open, setOpen] = useState(false);
   const c = useSection("header");
+  const ctaProps = useCtaProps();
   return (
     <header className="sticky top-0 z-50 backdrop-blur-md bg-[oklch(0.18_0.04_255_/_0.85)] border-b border-white/10">
       <div className="container-px mx-auto max-w-7xl flex items-center justify-between h-16 md:h-20">
@@ -18,7 +20,7 @@ export function Header() {
             </a>
           ))}
         </nav>
-        <a href={c.ctaHref} className="hidden md:inline-flex btn-cta !py-2.5 !px-4 !text-sm">
+        <a {...ctaProps(c.ctaHref)} className="hidden md:inline-flex btn-cta !py-2.5 !px-4 !text-sm">
           {c.ctaLabel}
         </a>
         <button onClick={() => setOpen(!open)} className="lg:hidden text-white p-2" aria-label="Меню">
@@ -33,7 +35,14 @@ export function Header() {
                 {l.label}
               </a>
             ))}
-            <a href={c.ctaHref} onClick={() => setOpen(false)} className="btn-cta mt-2">
+            <a
+              {...ctaProps(c.ctaHref)}
+              onClick={(e) => {
+                setOpen(false);
+                ctaProps(c.ctaHref).onClick?.(e);
+              }}
+              className="btn-cta mt-2"
+            >
               {c.ctaLabel}
             </a>
           </div>
