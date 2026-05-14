@@ -11,12 +11,6 @@ import { LogOut, Upload, RotateCcw, Plus, Trash2, Check, Loader2, Monitor, Smart
 
 export const Route = createFileRoute("/admin")({
   component: AdminPage,
-  head: () => ({
-    meta: [
-      { title: "Админ-панель" },
-      { name: "robots", content: "noindex, nofollow" },
-    ],
-  }),
 });
 
 function AdminPage() {
