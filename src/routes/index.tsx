@@ -14,23 +14,6 @@ import { Footer } from "@/components/site/Footer";
 
 export const Route = createFileRoute("/")({
   component: Index,
-  head: () => ({
-    meta: [
-      { title: "Семендуев — антикризисное управление для бизнеса" },
-      {
-        name: "description",
-        content:
-          "Антикризисный менеджер Виктор Семендуев. Диагностика финансов, команды и процессов. Конкретный план выхода из кризиса. Бесплатная экспресс-диагностика за 1 день.",
-      },
-      { property: "og:title", content: "Семендуев — антикризисное управление для бизнеса" },
-      {
-        property: "og:description",
-        content:
-          "Находим причины убытков и управленческого хаоса. Формируем план выхода из кризиса.",
-      },
-      { property: "og:type", content: "website" },
-    ],
-  }),
 });
 
 function Index() {
