@@ -5,17 +5,6 @@ import { Footer } from "@/components/site/Footer";
 
 export const Route = createFileRoute("/privacy")({
   component: PrivacyPage,
-  head: () => ({
-    meta: [
-      { title: "Политика конфиденциальности — Семендуев" },
-      {
-        name: "description",
-        content:
-          "Политика обработки персональных данных и согласие пользователей сайта Виктора Семендуева.",
-      },
-      { name: "robots", content: "noindex, nofollow" },
-    ],
-  }),
 });
 
 function PrivacyPage() {
