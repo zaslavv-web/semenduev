@@ -24,13 +24,20 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Deploy via rsync
-        uses: easingthemes/ssh-deploy@v5.1.0
+      - name: Setup SSH agent and add key
+        uses: webfactory/ssh-agent@v0.9.0
         with:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          REMOTE_HOST: ${{ secrets.SERVER_IP }}
-          REMOTE_USER: ${{ secrets.SERVER_USER }}
-          TARGET: ${{ secrets.TARGET_DIR }}
-          SOURCE: "dist/"
-          ARGS: "-avz --delete"
-          EXCLUDE: "/node_modules/, /.git/"
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add server to known_hosts (allow ssh-rsa)
+        run: |
+          mkdir -p ~/.ssh
+          # Получаем ключ сервера (разрешаем ssh-rsa для старого сервера)
+          ssh-keyscan -H -t rsa ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Deploy via rsync
+        run: |
+          rsync -avz --delete \
+            -e "ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa" \
+            dist/ \
+            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:${{ secrets.TARGET_DIR }}
