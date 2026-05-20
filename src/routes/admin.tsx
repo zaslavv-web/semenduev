@@ -138,7 +138,9 @@ const SECTION_LABELS: Record<SectionKey, string> = {
   footer: "Футер",
   diplomas: "Дипломы",
   privacy: "Политика конфиденциальности",
+  analytics: "Аналитика и пиксели",
 };
+
 
 const SECTION_KEYS = Object.keys(SECTION_LABELS) as SectionKey[];
 
@@ -555,7 +557,17 @@ const LABELS: Record<string, string> = {
   intro: "Вступление",
   sections: "Разделы",
   updatedAt: "Дата обновления",
+  yandexMetrikaId: "Яндекс.Метрика — ID счётчика",
+  googleAnalyticsId: "Google Analytics — Measurement ID (G-XXXX)",
+  googleAdsId: "Google Ads — Conversion ID (AW-XXXX)",
+  googleTagManagerId: "Google Tag Manager — ID (GTM-XXXX)",
+  vkPixelId: "VK Пиксель — ID",
+  topMailRuId: "Top.Mail.Ru — ID счётчика",
+  facebookPixelId: "Facebook Pixel — ID",
+  customHeadHtml: "Произвольный HTML в <head> (любые скрипты)",
+  customBodyHtml: "Произвольный HTML перед </body>",
 };
+
 
 function prettyLabel(k: string) {
   return LABELS[k] ?? k;

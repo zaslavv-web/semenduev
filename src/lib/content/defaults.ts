@@ -153,7 +153,19 @@ export type SiteContent = {
     intro: string;
     sections: { title: string; text: string }[];
   };
+  analytics: {
+    yandexMetrikaId: string;
+    googleAnalyticsId: string;
+    googleAdsId: string;
+    googleTagManagerId: string;
+    vkPixelId: string;
+    topMailRuId: string;
+    facebookPixelId: string;
+    customHeadHtml: string;
+    customBodyHtml: string;
+  };
 };
+
 
 export const defaultContent: SiteContent = {
   header: {
@@ -598,6 +610,18 @@ export const defaultContent: SiteContent = {
       },
     ],
   },
+  analytics: {
+    yandexMetrikaId: "",
+    googleAnalyticsId: "",
+    googleAdsId: "",
+    googleTagManagerId: "",
+    vkPixelId: "",
+    topMailRuId: "",
+    facebookPixelId: "",
+    customHeadHtml: "",
+    customBodyHtml: "",
+  },
 };
+
 
 export type SectionKey = keyof SiteContent;

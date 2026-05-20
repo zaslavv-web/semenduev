@@ -1,7 +1,9 @@
 import { Outlet, Link, createRootRoute } from "@tanstack/react-router";
 import { ContentProvider } from "@/lib/content/ContentProvider";
 import { RequestDialogProvider } from "@/components/site/RequestDialog";
+import { AnalyticsScripts } from "@/components/site/AnalyticsScripts";
 import { Toaster } from "@/components/ui/sonner";
+
 
 function NotFoundComponent() {
   return (
@@ -35,8 +37,10 @@ function RootComponent() {
     <ContentProvider>
       <RequestDialogProvider>
         <Outlet />
+        <AnalyticsScripts />
         <Toaster />
       </RequestDialogProvider>
+
     </ContentProvider>
   );
 }
