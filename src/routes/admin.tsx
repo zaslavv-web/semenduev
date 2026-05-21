@@ -62,7 +62,7 @@ function AdminPage() {
 }
 
 function AuthForm() {
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [mode, setMode] = useState<"signin" | "signup" | "forgot">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -79,6 +79,13 @@ function AuthForm() {
         });
         if (error) throw error;
         toast.success("Регистрация успешна. Вы вошли в систему.");
+      } else if (mode === "forgot") {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/reset-password`,
+        });
+        if (error) throw error;
+        toast.success("Письмо со ссылкой для восстановления отправлено на email.");
+        setMode("signin");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
@@ -91,33 +98,54 @@ function AuthForm() {
     }
   }
 
+  const titles = {
+    signin: "Вход в админ-панель",
+    signup: "Регистрация администратора",
+    forgot: "Восстановление пароля",
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-background">
       <form onSubmit={submit} className="w-full max-w-sm space-y-4 bg-card border border-border rounded-2xl p-8 shadow-lg">
-        <h1 className="text-2xl font-bold">{mode === "signin" ? "Вход в админ-панель" : "Регистрация администратора"}</h1>
+        <h1 className="text-2xl font-bold">{titles[mode]}</h1>
         <p className="text-sm text-muted-foreground">
           {mode === "signup"
             ? "Первый зарегистрированный пользователь автоматически получит роль администратора."
+            : mode === "forgot"
+            ? "Введите email — мы пришлём ссылку для сброса пароля."
             : "Введите email и пароль администратора."}
         </p>
         <div>
           <Label htmlFor="email">Email</Label>
           <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         </div>
-        <div>
-          <Label htmlFor="password">Пароль</Label>
-          <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
-        </div>
+        {mode !== "forgot" && (
+          <div>
+            <Label htmlFor="password">Пароль</Label>
+            <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
+          </div>
+        )}
         <Button type="submit" className="w-full" disabled={busy}>
-          {busy ? "..." : mode === "signin" ? "Войти" : "Зарегистрироваться"}
+          {busy ? "..." : mode === "signin" ? "Войти" : mode === "signup" ? "Зарегистрироваться" : "Отправить ссылку"}
         </Button>
-        <button
-          type="button"
-          className="text-sm text-muted-foreground hover:text-foreground w-full text-center"
-          onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
-        >
-          {mode === "signin" ? "Нет аккаунта? Зарегистрироваться" : "Уже есть аккаунт? Войти"}
-        </button>
+        <div className="flex flex-col gap-1.5">
+          {mode === "signin" && (
+            <button
+              type="button"
+              className="text-sm text-muted-foreground hover:text-foreground w-full text-center"
+              onClick={() => setMode("forgot")}
+            >
+              Забыли пароль?
+            </button>
+          )}
+          <button
+            type="button"
+            className="text-sm text-muted-foreground hover:text-foreground w-full text-center"
+            onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
+          >
+            {mode === "signin" ? "Нет аккаунта? Зарегистрироваться" : mode === "signup" ? "Уже есть аккаунт? Войти" : "Вернуться ко входу"}
+          </button>
+        </div>
       </form>
     </div>
   );
