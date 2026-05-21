@@ -17,6 +17,7 @@ function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [roleLoading, setRoleLoading] = useState(true);
 
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
@@ -32,18 +33,24 @@ function AdminPage() {
   useEffect(() => {
     if (!userId) {
       setIsAdmin(false);
+      setRoleLoading(false);
       return;
     }
+    setRoleLoading(true);
     supabase
       .from("user_roles")
       .select("role")
       .eq("user_id", userId)
       .eq("role", "admin")
       .maybeSingle()
-      .then(({ data }) => setIsAdmin(!!data));
+      .then(({ data, error }) => {
+        if (error) toast.error(error.message);
+        setIsAdmin(!!data);
+        setRoleLoading(false);
+      });
   }, [userId]);
 
-  if (loading) {
+  if (loading || (userId && roleLoading)) {
     return <div className="min-h-screen flex items-center justify-center text-muted-foreground">Загрузка…</div>;
   }
   if (!userId) return <AuthForm />;
