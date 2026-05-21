@@ -13,6 +13,7 @@ export const Route = createFileRoute("/reset-password")({
 function ResetPasswordPage() {
   const navigate = useNavigate();
   const [ready, setReady] = useState(false);
+  const [expired, setExpired] = useState(false);
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [busy, setBusy] = useState(false);
@@ -24,8 +25,15 @@ function ResetPasswordPage() {
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) setReady(true);
     });
-    return () => sub.subscription.unsubscribe();
+    const timer = setTimeout(() => {
+      setExpired((prev) => prev || true);
+    }, 3000);
+    return () => {
+      sub.subscription.unsubscribe();
+      clearTimeout(timer);
+    };
   }, []);
+
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -44,6 +52,23 @@ function ResetPasswordPage() {
     } finally {
       setBusy(false);
     }
+  }
+
+  if (!ready && expired) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-6 bg-background">
+        <div className="w-full max-w-sm space-y-4 bg-card border border-border rounded-2xl p-8 shadow-lg text-center">
+          <h1 className="text-2xl font-bold">Ссылка недействительна</h1>
+          <p className="text-sm text-muted-foreground">
+            Ссылка для восстановления пароля истекла или уже была использована.
+            Запросите новую.
+          </p>
+          <Button className="w-full" onClick={() => navigate({ to: "/admin" })}>
+            Запросить новую ссылку
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -86,3 +111,4 @@ function ResetPasswordPage() {
     </div>
   );
 }
+

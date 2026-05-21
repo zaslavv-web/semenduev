@@ -1,8 +1,12 @@
-import { Outlet, Link, createRootRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { Outlet, Link, createRootRoute, useNavigate } from "@tanstack/react-router";
 import { ContentProvider } from "@/lib/content/ContentProvider";
 import { RequestDialogProvider } from "@/components/site/RequestDialog";
 import { AnalyticsScripts } from "@/components/site/AnalyticsScripts";
 import { Toaster } from "@/components/ui/sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+
 
 
 function NotFoundComponent() {
@@ -33,6 +37,33 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const hash = window.location.hash;
+    if (hash && hash.includes("error=")) {
+      const params = new URLSearchParams(hash.slice(1));
+      const code = params.get("error_code");
+      const desc = params.get("error_description");
+      if (code === "otp_expired" || params.get("error") === "access_denied") {
+        toast.error(
+          "Ссылка для восстановления недействительна или уже использована. Запросите новую."
+        );
+      } else if (desc) {
+        toast.error(decodeURIComponent(desc.replace(/\+/g, " ")));
+      }
+      history.replaceState(null, "", window.location.pathname + window.location.search);
+    }
+
+    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY" && window.location.pathname !== "/reset-password") {
+        navigate({ to: "/reset-password" });
+      }
+    });
+    return () => sub.subscription.unsubscribe();
+  }, [navigate]);
+
   return (
     <ContentProvider>
       <RequestDialogProvider>
@@ -44,3 +75,4 @@ function RootComponent() {
     </ContentProvider>
   );
 }
+

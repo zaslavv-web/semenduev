@@ -128,6 +128,15 @@ function AuthForm() {
         <Button type="submit" className="w-full" disabled={busy}>
           {busy ? "..." : mode === "signin" ? "Войти" : mode === "signup" ? "Зарегистрироваться" : "Отправить ссылку"}
         </Button>
+        {mode === "forgot" && (
+          <p className="text-xs text-muted-foreground">
+            Ссылка действует ограниченное время и срабатывает только при первом
+            переходе. Если ваш почтовый клиент или антивирус автоматически
+            "проверяет" ссылки, она может сгореть до того, как вы её откроете —
+            тогда запросите новую.
+          </p>
+        )}
+
         <div className="flex flex-col gap-1.5">
           {mode === "signin" && (
             <button
