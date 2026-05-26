@@ -58,7 +58,8 @@ export type SiteContent = {
     formTitle: string;
     formSubtitle: string;
     submitLabel: string;
-    fileUrl: string;
+    telegramUrl: string;
+    telegramLabel: string;
     successTitle: string;
     successDescription: string;
     consentText: string;
@@ -293,12 +294,13 @@ export const defaultContent: SiteContent = {
       "Продажи и маркетинг",
       "Операционные процессы и риски",
     ],
-    formTitle: "Получите PDF на устройство",
-    formSubtitle: "Заполните форму — отправим файл мгновенно.",
-    submitLabel: "Получить материал",
-    fileUrl: "/files/antikrizisnye-mery-2026.pdf",
-    successTitle: "Файл скачивается!",
-    successDescription: "Если загрузка не началась — скачайте вручную.",
+    formTitle: "Получите доступ к материалу",
+    formSubtitle: "Заполните форму — пришлём ссылку и пригласим в авторский Telegram-канал.",
+    submitLabel: "Получить доступ",
+    telegramUrl: "https://t.me/semenduev_pro",
+    telegramLabel: "Подписаться на канал",
+    successTitle: "Спасибо! Последний шаг.",
+    successDescription: "Чек-лист и новые материалы я публикую в авторском Telegram-канале. Подпишитесь, чтобы получить файл и не пропустить разборы кейсов.",
     consentText:
       "Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности и обработкой персональных данных.",
   },

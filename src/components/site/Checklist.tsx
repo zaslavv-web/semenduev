@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FileDown, CheckCircle2 } from "lucide-react";
+import { Send, CheckCircle2 } from "lucide-react";
 import { useSection } from "@/lib/content/ContentProvider";
 
 export function Checklist() {
@@ -9,10 +9,6 @@ export function Checklist() {
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSent(true);
-    const a = document.createElement("a");
-    a.href = c.fileUrl;
-    a.download = c.fileUrl.split("/").pop() ?? "file";
-    a.click();
   }
 
   return (
@@ -39,13 +35,15 @@ export function Checklist() {
               <div className="text-center py-8">
                 <CheckCircle2 size={56} className="text-[oklch(0.55_0.14_155)] mx-auto mb-4" />
                 <h3 className="font-display text-2xl font-bold text-foreground">{c.successTitle}</h3>
-                <p className="mt-2 text-muted-foreground">
-                  {c.successDescription}{" "}
-                  <a href={c.fileUrl} className="text-[var(--brand)] underline font-semibold" download>
-                    скачайте вручную
-                  </a>
-                  .
-                </p>
+                <p className="mt-2 text-muted-foreground">{c.successDescription}</p>
+                <a
+                  href={c.telegramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-cta inline-flex mt-6"
+                >
+                  <Send size={18} /> {c.telegramLabel}
+                </a>
               </div>
             ) : (
               <>
@@ -55,7 +53,7 @@ export function Checklist() {
                   <Field label="Ваше имя" name="name" required />
                   <Field label="Телефон или email" name="contact" required />
                   <button type="submit" className="btn-cta w-full">
-                    <FileDown size={18} /> {c.submitLabel}
+                    <Send size={18} /> {c.submitLabel}
                   </button>
                   <p className="text-xs text-muted-foreground text-center leading-relaxed">
                     {c.consentText}{" "}
@@ -73,6 +71,7 @@ export function Checklist() {
     </section>
   );
 }
+
 
 function Field({ label, name, required }: { label: string; name: string; required?: boolean }) {
   return (
