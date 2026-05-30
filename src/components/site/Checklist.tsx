@@ -1,14 +1,39 @@
 import { useState } from "react";
 import { Send, CheckCircle2 } from "lucide-react";
 import { useSection } from "@/lib/content/ContentProvider";
+import { FORM_ENDPOINT } from "@/lib/config";
 
 export function Checklist() {
   const c = useSection("checklist");
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setSent(true);
+    if (submitting) return;
+    setError(null);
+    const fd = new FormData(e.currentTarget);
+    const payload = {
+      source: "checklist" as const,
+      name: String(fd.get("name") ?? "").trim().slice(0, 200),
+      contact: String(fd.get("contact") ?? "").trim().slice(0, 200),
+      website: String(fd.get("website") ?? ""),
+    };
+    setSubmitting(true);
+    try {
+      const res = await fetch(FORM_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      setSent(true);
+    } catch {
+      setError("Не удалось отправить. Попробуйте ещё раз или напишите в Telegram.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -52,9 +77,18 @@ export function Checklist() {
                 <form onSubmit={onSubmit} className="mt-6 space-y-4">
                   <Field label="Ваше имя" name="name" required />
                   <Field label="Телефон или email" name="contact" required />
-                  <button type="submit" className="btn-cta w-full">
-                    <Send size={18} /> {c.submitLabel}
+                  <input
+                    type="text"
+                    name="website"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden="true"
+                    style={{ position: "absolute", left: "-10000px", width: 1, height: 1, opacity: 0 }}
+                  />
+                  <button type="submit" disabled={submitting} className="btn-cta w-full disabled:opacity-60">
+                    <Send size={18} /> {submitting ? "Отправляем…" : c.submitLabel}
                   </button>
+                  {error && <p className="text-sm text-red-600 text-center">{error}</p>}
                   <p className="text-xs text-muted-foreground text-center leading-relaxed">
                     {c.consentText}{" "}
                     <a href="/privacy" className="underline hover:text-foreground">

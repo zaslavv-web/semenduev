@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useState, type ReactNode, type 
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useSection } from "@/lib/content/ContentProvider";
+import { FORM_ENDPOINT } from "@/lib/config";
 
 type Ctx = { open: (source?: string) => void; close: () => void };
 const RequestDialogCtx = createContext<Ctx>({ open: () => {}, close: () => {} });
@@ -48,15 +49,43 @@ export function RequestDialogProvider({ children }: { children: ReactNode }) {
 function RequestFormDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
   const c = useSection("contact");
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setSent(true);
+    if (submitting) return;
+    setError(null);
+    const fd = new FormData(e.currentTarget);
+    const payload = {
+      source: "dialog" as const,
+      name: String(fd.get("name") ?? "").trim().slice(0, 200),
+      phone: String(fd.get("phone") ?? "").trim().slice(0, 200),
+      message: String(fd.get("message") ?? "").trim().slice(0, 2000),
+      website: String(fd.get("website") ?? ""),
+    };
+    setSubmitting(true);
+    try {
+      const res = await fetch(FORM_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      setSent(true);
+    } catch {
+      setError("Не удалось отправить заявку. Попробуйте позже.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   function handleOpenChange(v: boolean) {
     onOpenChange(v);
-    if (!v) setTimeout(() => setSent(false), 200);
+    if (!v) setTimeout(() => {
+      setSent(false);
+      setError(null);
+    }, 200);
   }
 
   return (
@@ -85,9 +114,18 @@ function RequestFormDialog({ open, onOpenChange }: { open: boolean; onOpenChange
                   className="mt-1.5 w-full px-4 py-3 rounded-lg border border-border bg-surface text-foreground focus:outline-none focus:ring-2 focus:ring-[var(--brand)] transition resize-none"
                 />
               </label>
-              <button type="submit" className="btn-cta w-full">
-                {c.submitLabel} <ArrowRight size={18} />
+              <input
+                type="text"
+                name="website"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                style={{ position: "absolute", left: "-10000px", width: 1, height: 1, opacity: 0 }}
+              />
+              <button type="submit" disabled={submitting} className="btn-cta w-full disabled:opacity-60">
+                {submitting ? "Отправляем…" : c.submitLabel} <ArrowRight size={18} />
               </button>
+              {error && <p className="text-sm text-red-600 text-center">{error}</p>}
               <p className="text-xs text-muted-foreground text-center leading-relaxed">
                 {c.consentText}{" "}
                 <a href="/privacy" className="underline hover:text-foreground">

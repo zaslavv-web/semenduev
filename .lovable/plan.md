@@ -1,72 +1,80 @@
 
 ## Цель
 
-После сабмита формы «Получить чек-лист» **не скачивать PDF**, а показывать приглашение подписаться на Telegram-канал `https://t.me/semenduev_pro`.
+Исключить Lovable из цепочки отправки писем. Сайт переезжает на российский хостинг, форма отправляет заявку на ваш собственный обработчик, который шлёт письмо через `smtp.yandex.ru` на **viktor@semenduev.pro**.
 
-## Изменения
+## Архитектура
 
-### 1. `src/lib/content/defaults.ts` — секция `checklist`
-
-Заменить блок:
-
-```ts
-formTitle: "Получите PDF на устройство",
-formSubtitle: "Заполните форму — отправим файл мгновенно.",
-submitLabel: "Получить материал",
-fileUrl: "/files/antikrizisnye-mery-2026.pdf",
-successTitle: "Файл скачивается!",
-successDescription: "Если загрузка не началась — скачайте вручную.",
+```text
+Браузер посетителя
+   │
+   │  POST /send.php  { name, contact, source }
+   ▼
+Ваш российский хостинг (PHP + PHPMailer)
+   │
+   │  SMTP SSL :465, логин noreply@semenduev.pro
+   ▼
+smtp.yandex.ru  →  viktor@semenduev.pro
 ```
 
-На:
+Lovable используется только как редактор фронтенда. После сборки папка `dist/` заливается на хостинг как статика; динамика — один PHP-файл.
 
-```ts
-formTitle: "Получите доступ к материалу",
-formSubtitle: "Заполните форму — пришлём ссылку и пригласим в авторский Telegram-канал.",
-submitLabel: "Получить доступ",
-telegramUrl: "https://t.me/semenduev_pro",
-telegramLabel: "Подписаться на канал",
-successTitle: "Спасибо! Последний шаг.",
-successDescription: "Чек-лист и новые материалы я публикую в авторском Telegram-канале. Подпишитесь, чтобы получить файл и не пропустить разборы кейсов.",
-```
+## Что меняется в проекте (Lovable)
 
-Поле `fileUrl` удаляется. TypeScript-тип `SiteContent['checklist']` пересоберётся автоматически (он выводится из `defaultContent`).
+1. **Переключить сборку в режим статического SPA.** Сейчас проект — TanStack Start с SSR (Cloudflare Workers). Для российского хостинга (обычно nginx/Apache + PHP) нужен чистый клиентский билд. Это правится в `vite.config.ts` / `wrangler.jsonc` — отключаем серверный рендеринг, оставляем SPA + `index.html` + ассеты.
 
-### 2. `src/components/site/Checklist.tsx`
+2. **Адрес обработчика в одном месте — `src/lib/config.ts`:**
+   ```ts
+   export const FORM_ENDPOINT = "/send.php"; // или https://semenduev.pro/send.php
+   ```
+   Все формы импортируют эту константу — менять адрес в одной точке.
 
-- Удалить весь блок с `document.createElement("a")` / `a.download` / `a.click()` в `onSubmit` — оставить только `setSent(true)`.
-- В success-блоке вместо ссылки «скачайте вручную» рендерить кнопку-ссылку:
+3. **Заменить заглушки `setSent(true)` на реальную отправку** в трёх файлах:
+   - `src/components/site/Contact.tsx` (форма «Контакты»)
+   - `src/components/site/Checklist.tsx` (форма «Чек-лист»)
+   - `src/components/site/RequestDialog.tsx` (модалка «Оставить заявку»)
 
-```tsx
-<a
-  href={c.telegramUrl}
-  target="_blank"
-  rel="noopener noreferrer"
-  className="btn-cta inline-flex mt-6"
->
-  <Send size={18} /> {c.telegramLabel}
-</a>
-```
+   Каждая форма делает:
+   ```ts
+   await fetch(FORM_ENDPOINT, {
+     method: "POST",
+     headers: { "Content-Type": "application/json" },
+     body: JSON.stringify({ name, contact, source: "contact" | "checklist" | "dialog" }),
+   });
+   ```
+   Поле `source` нужно, чтобы в письме было видно, с какой формы заявка.
 
-(иконка `Send` из `lucide-react` вместо `FileDown`; `FileDown` оставить только на кнопке сабмита формы, либо тоже заменить на `Send` — заменю на `Send` для единообразия).
+4. **Удалить из проекта всё, что относится к Lovable Cloud/Supabase для писем** — оставляем БД только если она реально используется для других задач (например, админка контента). К отправке писем она больше отношения не имеет.
 
-- Заменить параграф `successDescription` на обычный `<p>` без вложенной ссылки на PDF.
+## Что появляется на вашем хостинге
 
-### 3. Админка
+Один PHP-файл `send.php` в корне сайта. Я подготовлю готовый скрипт — вам нужно будет:
 
-Ничего менять не нужно — `ValueEditor` в `src/routes/admin.tsx` рекурсивно генерит поля из объекта, поэтому новые `telegramUrl` и `telegramLabel` сразу появятся в секции «Чек-лист» как обычные текстовые поля.
+1. Загрузить `send.php` в корень хостинга.
+2. Установить PHPMailer (обычно `composer require phpmailer/phpmailer`, либо положить готовые файлы — зависит от хостинга).
+3. В `send.php` указать:
+   ```php
+   $mail->Host       = 'smtp.yandex.ru';
+   $mail->Port       = 465;
+   $mail->SMTPSecure = 'ssl';
+   $mail->Username   = 'noreply@semenduev.pro';
+   $mail->Password   = '***пароль приложения Яндекс***';
+   $mail->setFrom('noreply@semenduev.pro', 'Сайт semenduev.pro');
+   $mail->addAddress('viktor@semenduev.pro');
+   ```
+4. Защита: в скрипте — проверка `Origin/Referer`, лимит длин полей, простейший honeypot-поле, чтобы боты не спамили.
 
-### 4. Старые данные в БД
+## Что нужно от вас до начала
 
-В `site_content` сейчас сохранены только `footer` и `about` (проверял через psql). Секция `checklist` в БД отсутствует → берётся из `defaultContent` → новые поля подхватятся автоматически. Миграция БД не нужна.
+1. **Подтвердите домен `semenduev.pro` в Яндекс 360 для бизнеса** (или Яндекс Почта для домена) и создайте ящик `noreply@semenduev.pro`.
+2. **Сгенерируйте «пароль приложения»** в настройках этого ящика — обычный пароль от аккаунта для SMTP не подойдёт.
+3. **Сообщите**, на каком хостинге будет лежать сайт (Beget / Reg.ru / Timeweb / VPS / другое) — от этого зависит, кладём ли мы PHPMailer вручную или через composer и каким будет путь к `send.php`.
 
-### 5. Файл PDF
+После этого:
+- Я внесу правки в код Lovable (пункты 1–4 раздела «Что меняется в проекте»).
+- Передам вам готовый `send.php` с инструкцией по установке.
+- Проверим отправку с тестового адреса.
 
-Сам `public/files/antikrizisnye-mery-2026.pdf` оставляю на диске — на него больше ничего не ссылается, но удалять файл вне рамок задачи. Если хотите — отдельно скажите, удалю.
+## Что НЕ будет работать после переезда
 
-## Проверка после внедрения
-
-1. Открыть `/#checklist`, заполнить «Имя» и «Телефон», нажать «Получить доступ».
-2. Загрузка PDF **не должна** начаться.
-3. Должен появиться блок с заголовком «Спасибо! Последний шаг.» и кнопкой «Подписаться на канал», ведущей в новой вкладке на `https://t.me/semenduev_pro`.
-4. В админке `/admin` → секция «Чек-лист» — должны быть редактируемые поля `telegramUrl`, `telegramLabel`, обновлённые `successTitle`/`successDescription`.
+- Админка `/admin`, авторизация, БД контента (`site_content`) — они используют Lovable Cloud (Supabase) и тоже находятся за рубежом. Если контент сайта правится через `/admin`, нужно решить отдельно: либо оставить админку на Lovable-превью (для редактирования), а на хостинг выкладывать уже готовую статику; либо отказаться от админки и править тексты прямо в коде (`src/lib/content/defaults.ts`). Скажите, что для вас удобнее — это уже отдельная задача.
