@@ -49,8 +49,8 @@
 const SMTP_HOST       = 'smtp.yandex.ru';
 const SMTP_PORT       = 465;
 const SMTP_SECURE     = 'ssl';        // 'ssl' для 465, 'tls' для 587
-const SMTP_USER       = 'noreply@semenduev.pro';   // ← ВПИСАТЬ
-const SMTP_PASS       = 'ВПИШИТЕ_ПАРОЛЬ_ПРИЛОЖЕНИЯ'; // ← ВПИСАТЬ
+const SMTP_USER       = 'viktor.semenduev';   // ← ВПИСАТЬ
+const SMTP_PASS       = 'ayeeiwldusbsobcs'; // ← ВПИСАТЬ
 const SMTP_FROM_NAME  = 'Сайт semenduev.pro';
 
 const RECIPIENT_EMAIL = 'viktor@semenduev.pro';     // ← куда приходят заявки
