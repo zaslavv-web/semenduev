@@ -158,22 +158,22 @@ $debug[] = 'Источник формы: ' . $sourceLabel;
 $debug[] = 'Поиск PHPMailer...';
 
 // Вариант 1: send.php и PHPMailer лежат в одной папке (например, оба в public)
-$pathInSameDir = __DIR__ . '/PHPMailer/PHPMailer.php';
+$pathInSameDir = $_SERVER['DOCUMENT_ROOT'] . '/public/phpmailer/PHPMailer.php';
 
 // Вариант 2: send.php в корне сайта, а PHPMailer в public (DOCUMENT_ROOT/public/PHPMailer)
-$pathInPublic = $_SERVER['DOCUMENT_ROOT'] . '/public/PHPMailer/PHPMailer.php';
+$pathInPublic = $_SERVER['DOCUMENT_ROOT'] . '/public/phpmailer/PHPMailer.php';
 
 $phpmailerFound = false;
 if (file_exists($pathInSameDir)) {
-    require_once __DIR__ . '/PHPMailer/Exception.php';
-    require_once __DIR__ . '/PHPMailer/PHPMailer.php';
-    require_once __DIR__ . '/PHPMailer/SMTP.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . '/public/phpmailer/Exception.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . '/public/phpmailer/PHPMailer.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . '/public/phpmailer/SMTP.php';
     $phpmailerFound = true;
     $debug[] = 'PHPMailer загружен из: ' . $pathInSameDir;
 } elseif (file_exists($pathInPublic)) {
-    require_once $_SERVER['DOCUMENT_ROOT'] . '/public/PHPMailer/Exception.php';
-    require_once $_SERVER['DOCUMENT_ROOT'] . '/public/PHPMailer/PHPMailer.php';
-    require_once $_SERVER['DOCUMENT_ROOT'] . '/public/PHPMailer/SMTP.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . '/public/phpmailer/Exception.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . '/public/phpmailer/PHPMailer.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . '/public/phpmailer/SMTP.php';
     $phpmailerFound = true;
     $debug[] = 'PHPMailer загружен из: ' . $pathInPublic;
 }
