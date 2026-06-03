@@ -8,7 +8,7 @@
 const SMTP_HOST       = 'smtp.yandex.ru';
 const SMTP_PORT       = 465;
 const SMTP_SECURE     = 'ssl';
-const SMTP_USER       = 'viktor.semenduev';
+const SMTP_USER       = 'viktor.semenduev@yandex.ru';
 const SMTP_PASS       = 'ayeeiwldusbsobcs';
 const SMTP_FROM_NAME  = 'Сайт semenduev.pro';
 
