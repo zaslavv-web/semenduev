@@ -1,11 +1,10 @@
 <?php
-echo 123;
 /**
- * send.php — обработчик заявок с сайта semenduev.pro (отладочная версия)
+ * send.php — обработчик заявок с сайта semenduev.pro
+ * После переноса файла и PHPMailer в папку public/
  */
 
 // ============== CONFIG ==============
-
 const SMTP_HOST       = 'smtp.yandex.ru';
 const SMTP_PORT       = 465;
 const SMTP_SECURE     = 'ssl';
@@ -19,18 +18,15 @@ const ALLOWED_ORIGINS = [
     'https://semenduev.pro',
     'https://www.semenduev.pro',
 ];
-
 // ====================================
 
 header('Content-Type: application/json; charset=utf-8');
 
-// Включаем вывод всех ошибок
+// Включаем вывод всех ошибок (для отладки)
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Буфер для отладки
 $debug = [];
-
 $debug[] = '=== НАЧАЛО ОТЛАДКИ ===';
 $debug[] = 'Время: ' . date('Y-m-d H:i:s');
 $debug[] = 'Метод запроса: ' . $_SERVER['REQUEST_METHOD'];
@@ -67,15 +63,15 @@ $debug[] = 'Referer: ' . ($referer ?: 'не указан');
 
 $okOrigin = false;
 foreach (ALLOWED_ORIGINS as $allowed) {
-    if ($origin === $allowed) { 
-        $okOrigin = true; 
+    if ($origin === $allowed) {
+        $okOrigin = true;
         $debug[] = 'Origin принят: ' . $allowed;
-        break; 
+        break;
     }
-    if ($referer && strpos($referer, $allowed) === 0) { 
-        $okOrigin = true; 
+    if ($referer && strpos($referer, $allowed) === 0) {
+        $okOrigin = true;
         $debug[] = 'Referer принят: ' . $allowed;
-        break; 
+        break;
     }
 }
 
@@ -88,7 +84,6 @@ if (!$okOrigin) {
 // --- Парсим JSON ---
 $raw = file_get_contents('php://input');
 $debug[] = 'Сырые данные (длина: ' . strlen($raw) . '): ' . ($raw ?: 'ПУСТО');
-$debug[] = 'RAW в hex: ' . bin2hex(substr($raw, 0, 100));
 
 if (!$raw) {
     $debug[] = 'ОШИБКА: Нет данных в запросе';
@@ -159,27 +154,36 @@ $sourceLabel = [
 
 $debug[] = 'Источник формы: ' . $sourceLabel;
 
-// --- Подключаем PHPMailer ---
-$debug[] = 'Проверка PHPMailer...';
+// --- Подключаем PHPMailer (адаптированный путь) ---
+$debug[] = 'Поиск PHPMailer...';
 
-$autoload = __DIR__ . '/vendor/autoload.php';
-if (file_exists($autoload)) {
-    require_once $autoload;
-    $debug[] = 'PHPMailer загружен через composer';
-} else {
-    $phpmailerPath = __DIR__ . '/PHPMailer/PHPMailer.php';
-    if (file_exists($phpmailerPath)) {
-        require_once __DIR__ . '/PHPMailer/Exception.php';
-        require_once __DIR__ . '/PHPMailer/PHPMailer.php';
-        require_once __DIR__ . '/PHPMailer/SMTP.php';
-        $debug[] = 'PHPMailer загружен вручную';
-    } else {
-        $debug[] = 'ОШИБКА: PHPMailer не найден!';
-        $debug[] = 'Искали в: ' . $autoload;
-        $debug[] = 'И в: ' . $phpmailerPath;
-        echo json_encode(['debug' => $debug, 'ok' => false, 'error' => 'mailer_not_found']);
-        exit;
-    }
+// Вариант 1: send.php и PHPMailer лежат в одной папке (например, оба в public)
+$pathInSameDir = __DIR__ . '/PHPMailer/PHPMailer.php';
+
+// Вариант 2: send.php в корне сайта, а PHPMailer в public (DOCUMENT_ROOT/public/PHPMailer)
+$pathInPublic = $_SERVER['DOCUMENT_ROOT'] . '/public/PHPMailer/PHPMailer.php';
+
+$phpmailerFound = false;
+if (file_exists($pathInSameDir)) {
+    require_once __DIR__ . '/PHPMailer/Exception.php';
+    require_once __DIR__ . '/PHPMailer/PHPMailer.php';
+    require_once __DIR__ . '/PHPMailer/SMTP.php';
+    $phpmailerFound = true;
+    $debug[] = 'PHPMailer загружен из: ' . $pathInSameDir;
+} elseif (file_exists($pathInPublic)) {
+    require_once $_SERVER['DOCUMENT_ROOT'] . '/public/PHPMailer/Exception.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . '/public/PHPMailer/PHPMailer.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . '/public/PHPMailer/SMTP.php';
+    $phpmailerFound = true;
+    $debug[] = 'PHPMailer загружен из: ' . $pathInPublic;
+}
+
+if (!$phpmailerFound) {
+    $debug[] = 'ОШИБКА: PHPMailer не найден!';
+    $debug[] = 'Искали в: ' . $pathInSameDir;
+    $debug[] = 'И в: ' . $pathInPublic;
+    echo json_encode(['debug' => $debug, 'ok' => false, 'error' => 'mailer_not_found']);
+    exit;
 }
 
 use PHPMailer\PHPMailer\PHPMailer;
@@ -197,19 +201,19 @@ try {
     $mail->SMTPSecure = SMTP_SECURE;
     $mail->Username   = SMTP_USER;
     $mail->Password   = SMTP_PASS;
-    
+
     // Включаем SMTP debug для вывода
     $mail->SMTPDebug = 2;
     $mail->Debugoutput = function($str, $level) use (&$debug) {
         $debug[] = 'SMTP: ' . trim($str);
     };
-    
+
     $debug[] = 'Отправитель: ' . SMTP_USER;
     $mail->setFrom(SMTP_USER, SMTP_FROM_NAME);
-    
+
     $debug[] = 'Получатель: ' . RECIPIENT_EMAIL;
     $mail->addAddress(RECIPIENT_EMAIL);
-    
+
     if (filter_var($phone, FILTER_VALIDATE_EMAIL)) {
         $mail->addReplyTo($phone, $name);
         $debug[] = 'ReplyTo (email): ' . $phone;
@@ -239,21 +243,21 @@ try {
 
     $mail->Body    = implode("\n", $lines);
     $mail->isHTML(false);
-    
+
     $debug[] = 'Текст письма:';
     $debug[] = $mail->Body;
-    
+
     $debug[] = 'Попытка отправки...';
     $mail->send();
     $debug[] = '✓ ПИСЬМО УСПЕШНО ОТПРАВЛЕНО!';
-    
+
     echo json_encode(['debug' => $debug, 'ok' => true]);
-    
+
 } catch (Exception $e) {
     $debug[] = '✗ ОШИБКА ПРИ ОТПРАВКЕ: ' . $mail->ErrorInfo;
     $debug[] = 'Исключение: ' . $e->getMessage();
     $debug[] = 'Код ошибки: ' . $e->getCode();
-    
+
     echo json_encode(['debug' => $debug, 'ok' => false, 'error' => 'send_failed']);
 }
 
