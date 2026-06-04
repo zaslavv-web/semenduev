@@ -9,7 +9,7 @@
  * - Если обработчик будет на другом домене/поддомене, укажите полный URL,
  *   например: "https://api.semenduev.pro/send.php"
  */
-export const FORM_ENDPOINT = "public/send.php";
+export const FORM_ENDPOINT = "https://semenduev.pro/send.php";
 
 /**
  * Источник заявки — передаётся в теле запроса, чтобы в письме было видно,
