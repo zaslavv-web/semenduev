@@ -11,15 +11,15 @@
  * 1. Положите этот файл в корень сайта: /public_html/send.php
  *    (или туда, куда настроен document root вашего хостинга).
  *
- * 2. Установите PHPMailer одним из двух способов:
+ * 2. Установите phpmailer одним из двух способов:
  *
  *    А) Через composer (рекомендуется, если хостинг это поддерживает):
  *       composer require phpmailer/phpmailer
  *       — затем убедитесь, что в той же папке появилась /vendor/autoload.php.
  *
- *    Б) Вручную: скачайте https://github.com/PHPMailer/PHPMailer/releases
- *       и положите файлы src/PHPMailer.php, src/SMTP.php, src/Exception.php
- *       в /PHPMailer/ рядом с send.php. Затем замените блок
+ *    Б) Вручную: скачайте https://github.com/phpmailer/phpmailer/releases
+ *       и положите файлы src/phpmailer.php, src/SMTP.php, src/Exception.php
+ *       в /phpmailer/ рядом с send.php. Затем замените блок
  *       "require autoload" ниже на require_once для этих трёх файлов.
  *
  * 3. Заполните настройки в блоке CONFIG ниже:
@@ -145,22 +145,22 @@ $sourceLabel = [
     'dialog'    => 'Модалка «Оставить заявку»',
 ][$source] ?? ('Форма: ' . $source);
 
-// --- Подключаем PHPMailer ---
+// --- Подключаем phpmailer ---
 // Вариант А: composer
 $autoload = __DIR__ . '/vendor/autoload.php';
 if (file_exists($autoload)) {
     require_once $autoload;
 } else {
-    // Вариант Б: ручная установка PHPMailer в ./PHPMailer/
-    require_once __DIR__ . '/PHPMailer/Exception.php';
-    require_once __DIR__ . '/PHPMailer/PHPMailer.php';
-    require_once __DIR__ . '/PHPMailer/SMTP.php';
+    // Вариант Б: ручная установка phpmailer в ./phpmailer/
+    require_once __DIR__ . '/phpmailer/Exception.php';
+    require_once __DIR__ . '/phpmailer/phpmailer.php';
+    require_once __DIR__ . '/phpmailer/SMTP.php';
 }
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+use phpmailer\phpmailer\phpmailer;
+use phpmailer\phpmailer\Exception;
 
-$mail = new PHPMailer(true);
+$mail = new phpmailer(true);
 
 try {
     $mail->CharSet   = 'UTF-8';
