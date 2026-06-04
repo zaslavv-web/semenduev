@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Phone, Mail, Clock, ShieldCheck, Zap, ArrowRight, CheckCircle2, AlertTriangle } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
+import { Phone, Mail, Clock, ShieldCheck, Zap, ArrowRight, AlertTriangle } from "lucide-react";
 import { useSection } from "@/lib/content/ContentProvider";
 import { FORM_ENDPOINT } from "@/lib/config";
 
@@ -7,7 +8,7 @@ const badgeIcons = [Clock, Zap, ShieldCheck];
 
 export function Contact() {
   const c = useSection("contact");
-  const [sent, setSent] = useState(false);
+  const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,7 +34,7 @@ export function Contact() {
         body: JSON.stringify(payload),
       });
       if (!res.ok) throw new Error(String(res.status));
-      setSent(true);
+      navigate({ to: "/thank-you" });
     } catch {
       setError("Не удалось отправить заявку. Позвоните, пожалуйста, по телефону выше.");
     } finally {
@@ -94,52 +95,42 @@ export function Contact() {
           </div>
 
           <div className="bg-card border border-border rounded-2xl p-7 md:p-9 shadow-[var(--shadow-elegant)]">
-            {sent ? (
-              <div className="text-center py-10">
-                <CheckCircle2 size={56} className="text-[oklch(0.55_0.14_155)] mx-auto mb-4" />
-                <h3 className="font-display text-2xl font-bold text-foreground">{c.successTitle}</h3>
-                <p className="mt-2 text-muted-foreground">{c.successDescription}</p>
-              </div>
-            ) : (
-              <>
-                <h3 className="font-display text-2xl font-bold text-foreground">{c.formTitle}</h3>
-                <p className="mt-2 text-muted-foreground">{c.formSubtitle}</p>
-                <form onSubmit={onSubmit} className="mt-6 space-y-4">
-                  <Field label={c.nameLabel} name="name" required />
-                  <Field label={c.phoneFieldLabel} name="phone" required />
-                  <label className="block">
-                    <span className="text-sm font-semibold text-foreground">{c.messageLabel}</span>
-                    <textarea
-                      name="message"
-                      rows={4}
-                      className="mt-1.5 w-full px-4 py-3 rounded-lg border border-border bg-surface text-foreground focus:outline-none focus:ring-2 focus:ring-[var(--brand)] transition resize-none"
-                    />
-                  </label>
-                  {/* honeypot: скрытое поле против ботов */}
-                  <input
-                    type="text"
-                    name="website"
-                    tabIndex={-1}
-                    autoComplete="off"
-                    aria-hidden="true"
-                    style={{ position: "absolute", left: "-10000px", width: 1, height: 1, opacity: 0 }}
-                  />
-                  <button type="submit" disabled={submitting} className="btn-cta w-full disabled:opacity-60">
-                    {submitting ? "Отправляем…" : c.submitLabel} <ArrowRight size={18} />
-                  </button>
-                  {error && (
-                    <p className="text-sm text-red-600 text-center">{error}</p>
-                  )}
-                  <p className="text-xs text-muted-foreground text-center leading-relaxed">
-                    {c.consentText}{" "}
-                    <a href="/privacy" className="underline hover:text-foreground">
-                      Подробнее
-                    </a>
-                    .
-                  </p>
-                </form>
-              </>
-            )}
+            <h3 className="font-display text-2xl font-bold text-foreground">{c.formTitle}</h3>
+            <p className="mt-2 text-muted-foreground">{c.formSubtitle}</p>
+            <form onSubmit={onSubmit} className="mt-6 space-y-4">
+              <Field label={c.nameLabel} name="name" required />
+              <Field label={c.phoneFieldLabel} name="phone" required />
+              <label className="block">
+                <span className="text-sm font-semibold text-foreground">{c.messageLabel}</span>
+                <textarea
+                  name="message"
+                  rows={4}
+                  className="mt-1.5 w-full px-4 py-3 rounded-lg border border-border bg-surface text-foreground focus:outline-none focus:ring-2 focus:ring-[var(--brand)] transition resize-none"
+                />
+              </label>
+              {/* honeypot: скрытое поле против ботов */}
+              <input
+                type="text"
+                name="website"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                style={{ position: "absolute", left: "-10000px", width: 1, height: 1, opacity: 0 }}
+              />
+              <button type="submit" disabled={submitting} className="btn-cta w-full disabled:opacity-60">
+                {submitting ? "Отправляем…" : c.submitLabel} <ArrowRight size={18} />
+              </button>
+              {error && (
+                <p className="text-sm text-red-600 text-center">{error}</p>
+              )}
+              <p className="text-xs text-muted-foreground text-center leading-relaxed">
+                {c.consentText}{" "}
+                <a href="/privacy" className="underline hover:text-foreground">
+                  Подробнее
+                </a>
+                .
+              </p>
+            </form>
           </div>
         </div>
       </div>

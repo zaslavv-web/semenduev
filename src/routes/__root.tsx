@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Outlet, Link, createRootRoute, useNavigate } from "@tanstack/react-router";
 import { ContentProvider } from "@/lib/content/ContentProvider";
-import { RequestDialogProvider } from "@/components/site/RequestDialog";
+
 import { AnalyticsScripts } from "@/components/site/AnalyticsScripts";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -66,12 +66,9 @@ function RootComponent() {
 
   return (
     <ContentProvider>
-      <RequestDialogProvider>
-        <Outlet />
-        <AnalyticsScripts />
-        <Toaster />
-      </RequestDialogProvider>
-
+      <Outlet />
+      <AnalyticsScripts />
+      <Toaster />
     </ContentProvider>
   );
 }

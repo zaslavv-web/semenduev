@@ -37,10 +37,7 @@ export function Header() {
             ))}
             <a
               {...ctaProps(c.ctaHref)}
-              onClick={(e) => {
-                setOpen(false);
-                ctaProps(c.ctaHref).onClick?.(e);
-              }}
+              onClick={() => setOpen(false)}
               className="btn-cta mt-2"
             >
               {c.ctaLabel}
