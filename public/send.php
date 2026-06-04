@@ -153,17 +153,17 @@ $sourceLabel = [
 
 $debug[] = 'Источник формы: ' . $sourceLabel;
 
-// --- Подключаем PHPMailer (ручная установка в ./PHPMailer/) ---
-$debug[] = 'Поиск PHPMailer...';
+// --- Подключаем phpmailer (ручная установка в ./phpmailer/) ---
+$debug[] = 'Поиск phpmailer...';
 require_once __DIR__ . 'public/phpmailer/Exception.php';
-require_once __DIR__ . '/public/phpmailer/PHPMailer.php';
+require_once __DIR__ . '/public/phpmailer/phpmailer.php';
 require_once __DIR__ . '/public/phpmailer/SMTP.php';
-$debug[] = 'PHPMailer загружен';
+$debug[] = 'phpmailer загружен';
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+use phpmailer\phpmailer\phpmailer;
+use phpmailer\phpmailer\Exception;
 
-$mail = new PHPMailer(true);
+$mail = new phpmailer(true);
 
 try {
     $debug[] = 'Настройка SMTP...';
