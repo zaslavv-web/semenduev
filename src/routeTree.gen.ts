@@ -9,16 +9,22 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ThankYouRouteImport } from './routes/thank-you'
+import { Route as ThankYouDiagnosticRouteImport } from './routes/thank-you-diagnostic'
+import { Route as ThankYouChecklistRouteImport } from './routes/thank-you-checklist'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 
-const ThankYouRoute = ThankYouRouteImport.update({
-  id: '/thank-you',
-  path: '/thank-you',
+const ThankYouDiagnosticRoute = ThankYouDiagnosticRouteImport.update({
+  id: '/thank-you-diagnostic',
+  path: '/thank-you-diagnostic',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ThankYouChecklistRoute = ThankYouChecklistRouteImport.update({
+  id: '/thank-you-checklist',
+  path: '/thank-you-checklist',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -53,7 +59,8 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/thank-you': typeof ThankYouRoute
+  '/thank-you-checklist': typeof ThankYouChecklistRoute
+  '/thank-you-diagnostic': typeof ThankYouDiagnosticRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -61,7 +68,8 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/thank-you': typeof ThankYouRoute
+  '/thank-you-checklist': typeof ThankYouChecklistRoute
+  '/thank-you-diagnostic': typeof ThankYouDiagnosticRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -70,7 +78,8 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/thank-you': typeof ThankYouRoute
+  '/thank-you-checklist': typeof ThankYouChecklistRoute
+  '/thank-you-diagnostic': typeof ThankYouDiagnosticRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -80,7 +89,8 @@ export interface FileRouteTypes {
     | '/contact'
     | '/privacy'
     | '/reset-password'
-    | '/thank-you'
+    | '/thank-you-checklist'
+    | '/thank-you-diagnostic'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -88,7 +98,8 @@ export interface FileRouteTypes {
     | '/contact'
     | '/privacy'
     | '/reset-password'
-    | '/thank-you'
+    | '/thank-you-checklist'
+    | '/thank-you-diagnostic'
   id:
     | '__root__'
     | '/'
@@ -96,7 +107,8 @@ export interface FileRouteTypes {
     | '/contact'
     | '/privacy'
     | '/reset-password'
-    | '/thank-you'
+    | '/thank-you-checklist'
+    | '/thank-you-diagnostic'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -105,16 +117,24 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   PrivacyRoute: typeof PrivacyRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
-  ThankYouRoute: typeof ThankYouRoute
+  ThankYouChecklistRoute: typeof ThankYouChecklistRoute
+  ThankYouDiagnosticRoute: typeof ThankYouDiagnosticRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/thank-you': {
-      id: '/thank-you'
-      path: '/thank-you'
-      fullPath: '/thank-you'
-      preLoaderRoute: typeof ThankYouRouteImport
+    '/thank-you-diagnostic': {
+      id: '/thank-you-diagnostic'
+      path: '/thank-you-diagnostic'
+      fullPath: '/thank-you-diagnostic'
+      preLoaderRoute: typeof ThankYouDiagnosticRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/thank-you-checklist': {
+      id: '/thank-you-checklist'
+      path: '/thank-you-checklist'
+      fullPath: '/thank-you-checklist'
+      preLoaderRoute: typeof ThankYouChecklistRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reset-password': {
@@ -161,7 +181,8 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   PrivacyRoute: PrivacyRoute,
   ResetPasswordRoute: ResetPasswordRoute,
-  ThankYouRoute: ThankYouRoute,
+  ThankYouChecklistRoute: ThankYouChecklistRoute,
+  ThankYouDiagnosticRoute: ThankYouDiagnosticRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

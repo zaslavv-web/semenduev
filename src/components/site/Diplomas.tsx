@@ -1,5 +1,6 @@
 import { GraduationCap, FileText } from "lucide-react";
 import { useSection } from "@/lib/content/ContentProvider";
+import { CTA } from "./CTA";
 
 export function Diplomas() {
   const c = useSection("diplomas");
@@ -57,6 +58,15 @@ export function Diplomas() {
               </div>
             </a>
           ))}
+        </div>
+
+        <div className="mt-12">
+          <CTA
+            title="Готовы обсудить вашу ситуацию?"
+            subtitle="Бесплатная экспресс-диагностика за 1 день."
+            ctaKind="diagnostic"
+            ctaLabel="Записаться на диагностику"
+          />
         </div>
       </div>
     </section>

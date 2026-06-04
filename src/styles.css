@@ -108,14 +108,21 @@
 @layer base {
   * { border-color: var(--color-border); }
   html { scroll-behavior: smooth; }
-  html, body { overflow-x: hidden; max-width: 100%; }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    /* отступ под фиксированную шапку */
+    padding-top: 4rem;
+  }
+  @media (min-width: 768px) {
+    body { padding-top: 5rem; }
   }
   h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.02em; }
+  /* чтобы якоря не уезжали под фиксированную шапку */
+  section[id] { scroll-margin-top: 5rem; }
 }
 
 @layer components {

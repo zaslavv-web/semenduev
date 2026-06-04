@@ -45,7 +45,12 @@ export function CompanySteps() {
         </div>
 
         <div className="mt-12">
-          <CTA title={c.ctaTitle} subtitle={c.ctaSubtitle} />
+          <CTA
+            title={c.ctaTitle}
+            subtitle={c.ctaSubtitle}
+            ctaKind="checklist"
+            ctaLabel="Получить антикризисный чек-лист"
+          />
         </div>
       </div>
     </section>

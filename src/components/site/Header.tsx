@@ -1,14 +1,18 @@
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Phone, Send } from "lucide-react";
 import { useSection } from "@/lib/content/ContentProvider";
 import { useCtaProps } from "./RequestDialog";
+import { useLeadDialog } from "./LeadDialogProvider";
+
+const TELEGRAM_URL = "https://t.me/semenduev_pro";
 
 export function Header() {
   const [open, setOpen] = useState(false);
   const c = useSection("header");
   const ctaProps = useCtaProps();
+  const { openCallback } = useLeadDialog();
   return (
-    <header className="sticky top-0 z-50 backdrop-blur-md bg-[oklch(0.18_0.04_255_/_0.85)] border-b border-white/10">
+    <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[oklch(0.18_0.04_255_/_0.85)] border-b border-white/10">
       <div className="container-px mx-auto max-w-7xl flex items-center justify-between h-16 md:h-20">
         <a href="#top" className="flex items-center gap-2.5">
           <img src={c.logo} alt={c.logoAlt} className="h-9 w-auto" width={48} height={36} />
@@ -20,12 +24,31 @@ export function Header() {
             </a>
           ))}
         </nav>
-        <a {...ctaProps(c.ctaHref)} className="hidden sm:inline-flex btn-cta !py-2.5 !px-4 !text-sm">
-          {c.ctaLabel}
-        </a>
-        <button onClick={() => setOpen(!open)} className="lg:hidden text-white p-2" aria-label="Меню">
-          {open ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        <div className="flex items-center gap-2 sm:gap-3">
+          <a
+            href={TELEGRAM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Telegram-канал"
+            className="hidden sm:inline-flex items-center justify-center w-10 h-10 rounded-lg text-white/85 hover:text-white hover:bg-white/10 transition-colors"
+          >
+            <Send size={20} />
+          </a>
+          <button
+            type="button"
+            onClick={openCallback}
+            aria-label="Заказать обратный звонок"
+            className="hidden sm:inline-flex items-center justify-center w-10 h-10 rounded-lg text-white/85 hover:text-white hover:bg-white/10 transition-colors"
+          >
+            <Phone size={20} />
+          </button>
+          <a {...ctaProps("diagnostic")} className="hidden sm:inline-flex btn-cta !py-2.5 !px-4 !text-sm">
+            {c.ctaLabel}
+          </a>
+          <button onClick={() => setOpen(!open)} className="lg:hidden text-white p-2" aria-label="Меню">
+            {open ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
       {open && (
         <div className="lg:hidden border-t border-white/10 bg-[oklch(0.18_0.04_255)]">
@@ -35,9 +58,34 @@ export function Header() {
                 {l.label}
               </a>
             ))}
+            <div className="flex items-center gap-3 pt-2">
+              <a
+                href={TELEGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Telegram-канал"
+                className="inline-flex items-center justify-center w-11 h-11 rounded-lg text-white bg-white/10 hover:bg-white/20 transition-colors"
+              >
+                <Send size={20} />
+              </a>
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(false);
+                  openCallback();
+                }}
+                aria-label="Заказать обратный звонок"
+                className="inline-flex items-center justify-center w-11 h-11 rounded-lg text-white bg-white/10 hover:bg-white/20 transition-colors"
+              >
+                <Phone size={20} />
+              </button>
+            </div>
             <a
-              {...ctaProps(c.ctaHref)}
-              onClick={() => setOpen(false)}
+              {...ctaProps("diagnostic")}
+              onClick={(e) => {
+                ctaProps("diagnostic").onClick(e);
+                setOpen(false);
+              }}
               className="btn-cta mt-2"
             >
               {c.ctaLabel}

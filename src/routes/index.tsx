@@ -22,8 +22,8 @@ function Index() {
       <Header />
       <main>
         <Hero />
-        <About />
         <HowIWork />
+        <About />
         <Process />
         <CompanySteps />
         <Checklist />

@@ -1,10 +1,9 @@
-import { Check, Star, ArrowRight } from "lucide-react";
+import { Check, Star } from "lucide-react";
 import { useSection } from "@/lib/content/ContentProvider";
-import { useCtaProps } from "./RequestDialog";
+import { CTA } from "./CTA";
 
 export function Packages() {
   const c = useSection("packages");
-  const ctaProps = useCtaProps();
   return (
     <section id="packages" className="section">
       <div className="container-px mx-auto max-w-7xl">
@@ -48,19 +47,17 @@ export function Packages() {
                 <strong className="block mb-1">Результат</strong>
                 {p.result}
               </div>
-
-              <a
-                {...ctaProps(p.ctaHref)}
-                className={`mt-6 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-bold transition ${
-                  p.featured
-                    ? "bg-[oklch(0.78_0.15_78)] text-[oklch(0.18_0.04_255)] hover:brightness-110"
-                    : "bg-[var(--brand)] text-white hover:opacity-90"
-                }`}
-              >
-                {p.cta} <ArrowRight size={16} />
-              </a>
             </article>
           ))}
+        </div>
+
+        <div className="mt-12">
+          <CTA
+            title="Не уверены, какой пакет подойдёт?"
+            subtitle="Скачайте антикризисный чек-лист — поможет оценить состояние бизнеса."
+            ctaKind="checklist"
+            ctaLabel="Получить антикризисный чек-лист"
+          />
         </div>
       </div>
     </section>

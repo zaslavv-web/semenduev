@@ -34,8 +34,8 @@ export function HowIWork() {
           <CTA
             title={c.ctaTitle}
             subtitle={c.ctaSubtitle}
-            primaryLabel="Разобрать ситуацию"
-            secondaryLabel="Получить чек-лист"
+            ctaKind="checklist"
+            ctaLabel="Получить антикризисный чек-лист"
           />
         </div>
       </div>

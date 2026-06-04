@@ -1,4 +1,4 @@
-import { ArrowRight, FileDown } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useSection } from "@/lib/content/ContentProvider";
 import { useCtaProps } from "./RequestDialog";
 
@@ -27,12 +27,9 @@ export function Hero() {
               «{c.tagline}»
             </p>
           )}
-          <div className="mt-7 flex flex-col sm:flex-row gap-3">
-            <a {...ctaProps(c.primaryCtaHref)} className="btn-cta w-full sm:w-auto">
+          <div className="mt-7">
+            <a {...ctaProps("diagnostic")} className="btn-cta w-full sm:w-auto">
               {c.primaryCtaLabel} <ArrowRight size={18} />
-            </a>
-            <a href={c.secondaryCtaHref} className="btn-ghost w-full sm:w-auto">
-              <FileDown size={18} /> {c.secondaryCtaLabel}
             </a>
           </div>
           <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-5 max-w-3xl">

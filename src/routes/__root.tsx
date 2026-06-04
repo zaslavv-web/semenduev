@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Outlet, Link, createRootRoute, useNavigate } from "@tanstack/react-router";
 import { ContentProvider } from "@/lib/content/ContentProvider";
+import { LeadDialogProvider } from "@/components/site/LeadDialogProvider";
 
 import { AnalyticsScripts } from "@/components/site/AnalyticsScripts";
 import { Toaster } from "@/components/ui/sonner";
@@ -66,9 +67,11 @@ function RootComponent() {
 
   return (
     <ContentProvider>
-      <Outlet />
-      <AnalyticsScripts />
-      <Toaster />
+      <LeadDialogProvider>
+        <Outlet />
+        <AnalyticsScripts />
+        <Toaster />
+      </LeadDialogProvider>
     </ContentProvider>
   );
 }

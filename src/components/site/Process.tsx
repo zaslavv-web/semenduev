@@ -70,8 +70,8 @@ export function Process() {
             variant="dark"
             title={c.ctaTitle}
             subtitle={c.ctaSubtitle}
-            primaryLabel="Получить диагностику"
-            secondaryLabel="Антикризисный чек-лист"
+            ctaKind="diagnostic"
+            ctaLabel="Записаться на диагностику"
           />
         </div>
       </div>

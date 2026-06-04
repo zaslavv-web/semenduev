@@ -1,5 +1,4 @@
 import { CheckCircle2, ArrowRight } from "lucide-react";
-import { CTA } from "./CTA";
 import { useSection } from "@/lib/content/ContentProvider";
 import { useCtaProps } from "./RequestDialog";
 
@@ -28,11 +27,11 @@ export function About() {
             </h2>
             <p className="mt-2 text-lg text-muted-foreground">{c.subtitle}</p>
 
-            <div className="mt-6 space-y-4 text-base md:text-lg text-foreground/85 leading-relaxed">
-              {c.paragraphs.map((p, i) => (
-                <p key={i}>{p}</p>
-              ))}
-            </div>
+            {c.paragraphs.length > 0 && (
+              <p className="mt-6 text-base md:text-lg text-foreground/85 leading-relaxed">
+                {c.paragraphs[0]}
+              </p>
+            )}
 
             <ul className="mt-7 grid sm:grid-cols-2 gap-3">
               {c.facts.map((f) => (
@@ -43,20 +42,10 @@ export function About() {
               ))}
             </ul>
 
-            <a {...ctaProps(c.ctaHref)} className="btn-cta mt-8 inline-flex">
+            <a {...ctaProps("diagnostic")} className="btn-cta mt-8 inline-flex">
               {c.ctaLabel} <ArrowRight size={18} />
             </a>
           </div>
-        </div>
-
-        <div className="mt-16">
-          <CTA
-            variant="dark"
-            title={c.bottomCtaTitle}
-            subtitle={c.bottomCtaSubtitle}
-            primaryLabel="Обсудить ситуацию"
-            secondaryLabel="Получить чек-лист"
-          />
         </div>
       </div>
     </section>

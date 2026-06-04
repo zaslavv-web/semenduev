@@ -1,12 +1,11 @@
-import { TrendingDown, Wallet, UsersRound, ArrowRight } from "lucide-react";
+import { TrendingDown, Wallet, UsersRound } from "lucide-react";
 import { useSection } from "@/lib/content/ContentProvider";
-import { useCtaProps } from "./RequestDialog";
+import { CTA } from "./CTA";
 
 const icons = [TrendingDown, Wallet, UsersRound];
 
 export function Cases() {
   const c = useSection("cases");
-  const ctaProps = useCtaProps();
   return (
     <section id="cases" className="section bg-surface">
       <div className="container-px mx-auto max-w-7xl">
@@ -43,12 +42,18 @@ export function Cases() {
                     <dd className="text-foreground/90 mt-0.5 font-medium">{item.result}</dd>
                   </div>
                 </dl>
-                <a {...ctaProps(item.ctaHref)} className="btn-outline mt-6 self-start">
-                  {item.ctaLabel} <ArrowRight size={16} />
-                </a>
               </article>
             );
           })}
+        </div>
+
+        <div className="mt-12">
+          <CTA
+            title="Узнали свою ситуацию?"
+            subtitle="Разберём детально на бесплатной экспресс-диагностике."
+            ctaKind="diagnostic"
+            ctaLabel="Записаться на диагностику"
+          />
         </div>
       </div>
     </section>

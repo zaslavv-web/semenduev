@@ -1,30 +1,10 @@
-import { FileDown, CheckCircle2 } from "lucide-react";
+import { FileDown, CheckCircle2, ArrowRight } from "lucide-react";
 import { useSection } from "@/lib/content/ContentProvider";
-import { FORM_ENDPOINT } from "@/lib/config";
-
-const CHECKLIST_FILE = "/files/antikrizisnye-mery-2026.pdf";
-
-function notifyChecklistDownload() {
-  try {
-    fetch(FORM_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      keepalive: true,
-      body: JSON.stringify({
-        source: "checklist",
-        name: "Скачивание чек-листа",
-        phone: "—",
-        message: "Пользователь скачал PDF-чек-лист с сайта",
-        website: "",
-      }),
-    }).catch(() => {});
-  } catch {
-    /* ignore */
-  }
-}
+import { useCtaProps } from "./RequestDialog";
 
 export function Checklist() {
   const c = useSection("checklist");
+  const ctaProps = useCtaProps();
 
   return (
     <section id="checklist" className="section relative overflow-hidden" style={{ background: "var(--gradient-brand)" }}>
@@ -51,16 +31,11 @@ export function Checklist() {
             </div>
             <h3 className="font-display text-2xl font-bold text-foreground">{c.formTitle}</h3>
             <p className="mt-2 text-muted-foreground">{c.formSubtitle}</p>
-            <a
-              href={CHECKLIST_FILE}
-              download
-              onClick={() => notifyChecklistDownload()}
-              className="btn-cta inline-flex mt-6"
-            >
-              <FileDown size={18} /> Скачать чек-лист (PDF)
+            <a {...ctaProps("checklist")} className="btn-cta inline-flex mt-6">
+              <FileDown size={18} /> Получить чек-лист <ArrowRight size={18} />
             </a>
             <p className="mt-4 text-xs text-muted-foreground leading-relaxed">
-              PDF • бесплатно • без регистрации
+              PDF • бесплатно
             </p>
           </div>
         </div>

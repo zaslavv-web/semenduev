@@ -1,22 +1,19 @@
-import { ArrowRight, FileDown } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useCtaProps } from "./RequestDialog";
+import type { LeadKind } from "./LeadDialogProvider";
 
 export function CTA({
   title,
   subtitle,
   variant = "light",
-  primaryLabel = "Записаться",
-  primaryHref = "#contacts",
-  secondaryLabel = "Чек-лист",
-  secondaryHref = "#checklist",
+  ctaLabel = "Записаться на диагностику",
+  ctaKind = "diagnostic",
 }: {
   title: string;
   subtitle?: string;
   variant?: "light" | "dark";
-  primaryLabel?: string;
-  primaryHref?: string;
-  secondaryLabel?: string;
-  secondaryHref?: string;
+  ctaLabel?: string;
+  ctaKind?: LeadKind;
 }) {
   const dark = variant === "dark";
   const ctaProps = useCtaProps();
@@ -46,15 +43,9 @@ export function CTA({
           </p>
         )}
       </div>
-      <div className="flex flex-col sm:flex-row gap-3 shrink-0 w-full md:w-auto">
-        <a {...ctaProps(primaryHref)} className="btn-cta w-full sm:w-auto">
-          {primaryLabel} <ArrowRight size={18} />
-        </a>
-        <a
-          href={secondaryHref}
-          className={`${dark ? "btn-ghost" : "btn-outline"} w-full sm:w-auto`}
-        >
-          <FileDown size={18} /> {secondaryLabel}
+      <div className="shrink-0 w-full md:w-auto">
+        <a {...ctaProps(ctaKind)} className="btn-cta w-full sm:w-auto">
+          {ctaLabel} <ArrowRight size={18} />
         </a>
       </div>
     </div>

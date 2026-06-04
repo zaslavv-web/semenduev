@@ -34,7 +34,7 @@ export function Contact() {
         body: JSON.stringify(payload),
       });
       if (!res.ok) throw new Error(String(res.status));
-      navigate({ to: "/thank-you" });
+      navigate({ to: "/thank-you-diagnostic" });
     } catch {
       setError("Не удалось отправить заявку. Позвоните, пожалуйста, по телефону выше.");
     } finally {
