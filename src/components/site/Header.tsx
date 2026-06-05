@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Menu, X, Phone, Send } from "lucide-react";
+import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { useSection } from "@/lib/content/ContentProvider";
 import { useCtaProps } from "./RequestDialog";
 import { useLeadDialog } from "./LeadDialogProvider";
@@ -11,15 +12,47 @@ export function Header() {
   const c = useSection("header");
   const ctaProps = useCtaProps();
   const { openCallback } = useLeadDialog();
+  const navigate = useNavigate();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isHome = pathname === "/";
+
+  const scrollToHash = (hash: string) => {
+    const id = hash.replace(/^#/, "");
+    if (!id) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    setOpen(false);
+    if (isHome) {
+      scrollToHash(href);
+    } else {
+      navigate({ to: "/" }).then(() => {
+        // wait next frame so sections are mounted
+        setTimeout(() => scrollToHash(href), 50);
+      });
+    }
+  };
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[oklch(0.18_0.04_255_/_0.85)] border-b border-white/10">
       <div className="container-px mx-auto max-w-7xl flex items-center justify-between h-16 md:h-20">
-        <a href="#top" className="flex items-center gap-2.5">
+        <Link to="/" className="flex items-center gap-2.5" aria-label="На главную">
           <img src={c.logo} alt={c.logoAlt} className="h-9 w-auto" width={48} height={36} />
-        </a>
+        </Link>
         <nav className="hidden lg:flex items-center gap-7">
           {c.links.map((l) => (
-            <a key={l.href} href={l.href} className="text-sm font-medium text-white/80 hover:text-white transition-colors">
+            <a
+              key={l.href}
+              href={isHome ? l.href : `/${l.href}`}
+              onClick={(e) => handleNavClick(e, l.href)}
+              className="text-sm font-medium text-white/80 hover:text-white transition-colors"
+            >
               {l.label}
             </a>
           ))}
@@ -54,7 +87,12 @@ export function Header() {
         <div className="lg:hidden border-t border-white/10 bg-[oklch(0.18_0.04_255)]">
           <div className="container-px mx-auto max-w-7xl py-4 flex flex-col gap-3">
             {c.links.map((l) => (
-              <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="text-white/90 py-2 text-base font-medium">
+              <a
+                key={l.href}
+                href={isHome ? l.href : `/${l.href}`}
+                onClick={(e) => handleNavClick(e, l.href)}
+                className="text-white/90 py-2 text-base font-medium"
+              >
                 {l.label}
               </a>
             ))}
