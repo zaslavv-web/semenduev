@@ -1,11 +1,16 @@
 import { useState } from "react";
 import { Menu, X, Phone, Send } from "lucide-react";
-import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useSection } from "@/lib/content/ContentProvider";
 import { useCtaProps } from "./RequestDialog";
 import { useLeadDialog } from "./LeadDialogProvider";
 
 const TELEGRAM_URL = "https://t.me/semenduev_pro";
+
+const toHomeHref = (h: string) => {
+  const hash = h.startsWith("#") ? h : `#${h}`;
+  return `/${hash}`;
+};
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -13,8 +18,6 @@ export function Header() {
   const ctaProps = useCtaProps();
   const { openCallback } = useLeadDialog();
   const navigate = useNavigate();
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const isHome = pathname === "/";
 
   const scrollToHash = (hash: string) => {
     const id = hash.replace(/^#/, "");
@@ -27,13 +30,15 @@ export function Header() {
   };
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    // allow new-tab / modifier clicks to use the absolute href
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || (e as any).button === 1) return;
     e.preventDefault();
     setOpen(false);
-    if (isHome) {
+    const onHome = typeof window !== "undefined" && window.location.pathname === "/";
+    if (onHome) {
       scrollToHash(href);
     } else {
       navigate({ to: "/" }).then(() => {
-        // wait next frame so sections are mounted
         setTimeout(() => scrollToHash(href), 50);
       });
     }
@@ -49,7 +54,7 @@ export function Header() {
           {c.links.map((l) => (
             <a
               key={l.href}
-              href={isHome ? l.href : `/${l.href}`}
+              href={toHomeHref(l.href)}
               onClick={(e) => handleNavClick(e, l.href)}
               className="text-sm font-medium text-white/80 hover:text-white transition-colors"
             >
@@ -89,7 +94,7 @@ export function Header() {
             {c.links.map((l) => (
               <a
                 key={l.href}
-                href={isHome ? l.href : `/${l.href}`}
+                href={toHomeHref(l.href)}
                 onClick={(e) => handleNavClick(e, l.href)}
                 className="text-white/90 py-2 text-base font-medium"
               >
